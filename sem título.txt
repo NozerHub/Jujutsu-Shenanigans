@@ -1,0 +1,355 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Jujutsu Shenanigans  ",
+    SubTitle = "       By Nozer Hub | First Version",
+    TabWidth = 135,
+    Size = UDim2.fromOffset(500, 350),
+    Acrylic = true,
+    Theme = "Darker",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    InfoScript = Window:AddTab({ Title = "Info Script", Icon = "scroll" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "home" }), 
+    SwitchFast = Window:AddTab({ Title = "Switch Fast", Icon = "repeat" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "list" }),
+    Anti Lag = Window:AddTab({ Title = "Anti Lag", Icon = "shield" }),
+    Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+    Settings = Window:AddTab({ Title = "UI Settings", Icon = "settings" }),
+}
+
+local Options = Fluent.Options
+
+Fluent:Notify({
+    Title = "By ZetraScripts YT",
+    Content = "Thanks for using the script",
+    Duration = 5
+})
+
+local SupportSection = Tabs.InfoScript:AddSection("Support")
+Tabs.InfoScript:AddParagraph({
+    Title = "Supported Devices",
+    Content = "- Mobile\n- PC\n- Emulator\n- Console"
+})
+
+local UpdatesSection = Tabs.InfoScript:AddSection("Updates")
+Tabs.InfoScript:AddParagraph({
+    Title = "Updates ",
+    Content = "- 7/11/2024"
+})
+
+local SupportSection = Tabs.InfoScript:AddSection("Support Executors")
+Tabs.InfoScript:AddParagraph({
+    Title = "Executors",
+    Content = "- Delta\n- Fluxus\n- Arceus X\n- Wave\n- Codex"
+})
+
+local CreditsSection = Tabs.InfoScript:AddSection("Credits")
+local linkParaCopiar = "https://www.youtube.com/@NozerHub"
+Tabs.InfoScript:AddButton({
+    Title = "Copy Link Channel",
+    Callback = function()
+        setclipboard(linkParaCopiar)
+    end
+})
+
+local AttackSection = Tabs.Main:AddSection("Attack")
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Attack", Default = false })
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        while Toggle.Value do
+            local argsGojo = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsGojo))
+
+            local argsItadori = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsItadori))
+
+            local argsHakari = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsHakari))
+
+            local argsMegumi = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsMegumi))
+
+            wait(0.1)
+        end
+    end
+end)
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Dash Attack", Default = false })
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        while Toggle.Value do
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            wait(0.1)
+        end
+    end
+end)
+
+local AntiAFKEnabled = true
+local Toggle = Tabs.Misc:AddToggle("MyToggle", { Title = "Anti AFK", Default = true })
+Toggle:OnChanged(function()
+    AntiAFKEnabled = Options.MyToggle.Value
+end)
+Options.MyToggle:SetValue(true)
+
+Tabs.Misc:AddButton({
+    Title = "Server Hop",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local placeId = game.PlaceId
+
+        local function serverHop()
+            local servers
+            local cursor = ""
+
+            local success, response = pcall(function()
+                local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. cursor
+                return HttpService:JSONDecode(game:HttpGet(url))
+            end)
+
+            if success and response and response.data then
+                servers = response.data
+            else
+                return
+            end
+
+            for _, server in ipairs(servers) do
+                if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                    TeleportService:TeleportToPlaceInstance(placeId, server.id)
+                    return
+                end
+            end
+
+            if response.nextPageCursor then
+                cursor = response.nextPageCursor
+                serverHop()
+            else
+            end
+        end
+
+        serverHop()
+    end
+})
+
+Tabs.Misc:AddButton({
+    Title = "Rejoin",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local player = game.Players.LocalPlayer
+        TeleportService:Teleport(game.PlaceId, player)
+    end
+})
+
+local Dropdown = Tabs.SwitchFast:AddDropdown("Dropdown", {
+    Title = "Select",
+    Values = { "Honored One", "Vessel", "Restless Gambler", "Tem Shadows" },
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:SetValue("CHARACTERS!")
+
+local selectedValue
+Dropdown:OnChanged(function(Value)
+    selectedValue = Value
+end)
+
+Tabs.SwitchFast:AddButton({
+    Title = "Apply Character",
+    Callback = function()
+        if selectedValue == "Gojo" then
+            local args = { [1] = "Gojo" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Itadori" then
+            local args = { [1] = "Itadori" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Hakari" then
+            local args = { [1] = "Hakari" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Megumi" then
+            local args = { [1] = "Megumi" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        end
+    end
+})
+
+local AutoPlaySection = Tabs.Main:AddSection("Auto Play")
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Play", Default = false })
+
+Toggle:OnChanged(function()
+    print("Toggle changed:", Options.MyToggle.Value)
+
+    -- Fun��o para encontrar o jogador mais pr�ximo
+    local function getClosestPlayer()
+        local closestPlayer = nil
+        local closestDistance = math.huge  -- Inicializa com um valor muito alto
+
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            if otherPlayer ~= game.Players.LocalPlayer and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                -- Verifica a dist�ncia entre o personagem e o outro jogador
+                local distance = (otherPlayer.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                if distance < closestDistance then
+                    closestPlayer = otherPlayer
+                    closestDistance = distance
+                end
+            end
+        end
+        return closestPlayer
+    end
+
+    -- Fun��o para mover o personagem para o jogador mais pr�ximo
+    local function moveToClosestPlayer()
+        local closestPlayer = getClosestPlayer()
+        
+        if closestPlayer then
+            -- Verifica se o jogador ainda est� vivo e no servidor
+            if closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPosition = closestPlayer.Character.HumanoidRootPart.Position
+                game.Players.LocalPlayer.Character.Humanoid:MoveTo(targetPosition)  -- Mover o personagem at� a posi��o do jogador mais pr�ximo
+            end
+        end
+    end
+
+    -- Fun��o para verificar se o jogador mais pr�ximo morreu ou saiu do servidor
+    local function monitorPlayerStatus()
+        local closestPlayer = getClosestPlayer()
+
+        if closestPlayer then
+            -- Acompanhar morte do jogador
+            closestPlayer.CharacterAdded:Connect(function(character)
+                local humanoid = character:WaitForChild("Humanoid")
+                humanoid.Died:Connect(function()
+                    -- Jogador morreu, procuramos outro alvo
+                    print(closestPlayer.Name .. " morreu. Procurando novo alvo...")
+                end)
+            end)
+
+            -- Acompanhar quando o jogador sai do servidor
+            closestPlayer.AncestryChanged:Connect(function(_, parent)
+                if not parent then
+                    -- Jogador saiu do servidor
+                    print(closestPlayer.Name .. " saiu do servidor. Procurando novo alvo...")
+                end
+            end)
+        end
+    end
+
+    -- Inicia o movimento e monitoramento quando o toggle for ativado
+    if Toggle.Value then
+        while Toggle.Value do
+            moveToClosestPlayer()  -- Move para o jogador mais pr�ximo
+            monitorPlayerStatus()  -- Monitora a morte ou desconex�o do jogador
+            wait(1)  -- Atraso de 1 segundo entre as verifica��es
+        end
+    end
+end)
+
+Options.MyToggle:SetValue(false)
+
+local Toggle = Tabs.Main:AddToggle("ESPToggle", {Title = "Esp All Players", Default = false })
+
+local activeConnections = {}
+
+local function addESP(player)
+    if player == game.Players.LocalPlayer then
+        return
+    end
+
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = player.Character
+    highlight.Adornee = player.Character
+    highlight.FillColor = Color3.fromRGB(255, 0, 0)  -- Cor de preenchimento (vermelha)
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)  -- Cor do contorno (branca)
+    highlight.OutlineTransparency = 0.5  -- Transpar�ncia do contorno
+    highlight.FillTransparency = 0.2  -- Transpar�ncia do preenchimento
+    highlight.Enabled = true
+end
+
+local function removeESP(player)
+    if player.Character and player.Character:FindFirstChildOfClass("Highlight") then
+        player.Character:FindFirstChildOfClass("Highlight"):Destroy()
+    end
+end
+
+-- Fun��o para gerenciar o Toggle
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        -- Ativar ESP para todos os jogadores existentes
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Character then
+                addESP(player)
+            end
+        end
+
+        -- Conectar evento para adicionar ESP para novos jogadores que entram
+        local playerAddedConnection = game.Players.PlayerAdded:Connect(function(player)
+            player.CharacterAdded:Connect(function(character)
+                wait(1)
+                addESP(player)
+            end)
+        end)
+
+        -- Conectar evento para remover ESP quando um jogador sair
+        local playerRemovingConnection = game.Players.PlayerRemoving:Connect(function(player)
+            removeESP(player)
+        end)
+
+        -- Armazenar as conex�es ativas
+        table.insert(activeConnections, playerAddedConnection)
+        table.insert(activeConnections, playerRemovingConnection)
+
+    else
+        -- Remover ESP de todos os jogadores
+        for _, player in pairs(game.Players:GetPlayers()) do
+            removeESP(player)
+        end
+
+        -- Desconectar as conex�es de eventos
+        for _, connection in pairs(activeConnections) do
+            connection:Disconnect()
+        end
+
+        -- Limpar as conex�es ativas
+        activeConnections = {}
+    end
+end)
+
+Options.ESPToggle:SetValue(false)  -- Definir o toggle inicialmente como desligado
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+SaveManager:LoadAutoloadConfig()
