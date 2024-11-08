@@ -440,8 +440,17 @@ local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
     Default = {},
 })
 
+-- Dropdown para Skills 3
+local SkillsDropdown3 = Tabs.Skills:AddDropdown("SkillsDropdown3", {
+    Title = "Skills 3",
+    Values = { "ReserveBall", "ShutterDoor", "RoughEnergy", "FeverBreaker" },
+    Multi = true,
+    Default = {},
+})
+
 local runningScripts1 = {}
 local runningScripts2 = {}
+local runningScripts3 = {}
 
 -- Função para iniciar a execução contínua de uma habilidade
 local function startLoop(skillName, serviceName, scriptTable)
@@ -513,6 +522,33 @@ SkillsDropdown2:OnChanged(function(Value)
         startLoop("ManjiKick", "ManjiKickService", runningScripts2)
     else
         stopLoop("ManjiKick", runningScripts2)
+    end
+end)
+
+-- Lógica para o Dropdown 3 (Skills 3)
+SkillsDropdown3:OnChanged(function(Value)
+    if Value["ReserveBall"] then
+        startLoop("ReserveBall", "ReserveBallService", runningScripts3)
+    else
+        stopLoop("ReserveBall", runningScripts3)
+    end
+
+    if Value["ShutterDoor"] then
+        startLoop("ShutterDoor", "ShutterDoorService", runningScripts3)
+    else
+        stopLoop("ShutterDoor", runningScripts3)
+    end
+
+    if Value["RoughEnergy"] then
+        startLoop("RoughEnergy", "RoughEnergyService", runningScripts3)
+    else
+        stopLoop("RoughEnergy", runningScripts3)
+    end
+
+    if Value["FeverBreaker"] then
+        startLoop("FeverBreaker", "FeverBreakerService", runningScripts3)
+    else
+        stopLoop("FeverBreaker", runningScripts3)
     end
 end)
 
