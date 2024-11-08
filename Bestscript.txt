@@ -424,35 +424,90 @@ Tabs.AntiLag:AddButton({
     end
 })
 
-local MultiDropdown = Tabs.Skills:AddDropdown("MultiDropdown", {
-    Title = "Honored One",
+local SkillsDropdown1 = Tabs.Skills:AddDropdown("SkillsDropdown1", {
+    Title = "Skills 1",
     Values = { "LapseBlue", "ReversalRed", "RapidPunches", "TwofoldKick" },
     Multi = true,
     Default = {},
 })
 
-MultiDropdown:OnChanged(function(Value)
-    -- Verifica e executa o primeiro script (LapseBlue)
+local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
+    Title = "Skills 2",
+    Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
+    Multi = true,
+    Default = {},
+})
+
+local runningScripts = {}
+
+local function startLoop(skillName, serviceName)
+    if runningScripts[skillName] then return end
+    runningScripts[skillName] = true
+
+    spawn(function()
+        while runningScripts[skillName] do
+            local args = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild(serviceName):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            wait(0.1)  -- Intervalo entre execuções
+        end
+    end)
+end
+
+local function stopLoop(skillName)
+    runningScripts[skillName] = nil
+end
+
+SkillsDropdown1:OnChanged(function(Value)
+    -- Verifica e controla o loop de cada habilidade do Skills 1
     if Value["LapseBlue"] then
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("LapseBlueService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer()
+        startLoop("LapseBlue", "LapseBlueService")
+    else
+        stopLoop("LapseBlue")
     end
 
-    -- Verifica e executa o segundo script (ReversalRed)
     if Value["ReversalRed"] then
-        local args1 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ReversalRedService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args1))
+        startLoop("ReversalRed", "ReversalRedService")
+    else
+        stopLoop("ReversalRed")
     end
 
-    -- Verifica e executa o terceiro script (RapidPunches)
     if Value["RapidPunches"] then
-        local args2 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RapidPunchesService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args2))
+        startLoop("RapidPunches", "RapidPunchesService")
+    else
+        stopLoop("RapidPunches")
     end
 
-    -- Verifica e executa o quarto script (TwofoldKick)
     if Value["TwofoldKick"] then
-        local args3 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("TwofoldKickService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args3))
+        startLoop("TwofoldKick", "TwofoldKickService")
+    else
+        stopLoop("TwofoldKick")
+    end
+end)
+
+SkillsDropdown2:OnChanged(function(Value)
+    -- Verifica e controla o loop de cada habilidade do Skills 2
+    if Value["CursedStrikes"] then
+        startLoop("CursedStrikes", "CursedStrikesService")
+    else
+        stopLoop("CursedStrikes")
+    end
+
+    if Value["CrushingBlow"] then
+        startLoop("CrushingBlow", "CrushingBlowService")
+    else
+        stopLoop("CrushingBlow")
+    end
+
+    if Value["DivergentFist"] then
+        startLoop("DivergentFist", "DivergentFistService")
+    else
+        stopLoop("DivergentFist")
+    end
+
+    if Value["ManjiKick"] then
+        startLoop("ManjiKick", "ManjiKickService")
+    else
+        stopLoop("ManjiKick")
     end
 end)
 
@@ -463,29 +518,51 @@ local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
     Default = {},
 })
 
+local runningScripts = {}
+
 SkillsDropdown2:OnChanged(function(Value)
-    -- Verifica e executa o primeiro script (CursedStrikes)
+    -- Função para iniciar a execução contínua de uma habilidade
+    local function startLoop(skillName, serviceName)
+        if runningScripts[skillName] then return end
+        runningScripts[skillName] = true
+
+        spawn(function()
+            while runningScripts[skillName] do
+                local args = { [1] = false }
+                game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild(serviceName):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+                wait(0.1)  -- Intervalo entre execuções
+            end
+        end)
+    end
+
+    -- Função para parar a execução contínua de uma habilidade
+    local function stopLoop(skillName)
+        runningScripts[skillName] = nil
+    end
+
+    -- Verifica e controla o loop de cada habilidade com base na seleção
     if Value["CursedStrikes"] then
-        local args1 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("CursedStrikesService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args1))
+        startLoop("CursedStrikes", "CursedStrikesService")
+    else
+        stopLoop("CursedStrikes")
     end
 
-    -- Verifica e executa o segundo script (CrushingBlow)
     if Value["CrushingBlow"] then
-        local args2 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("CrushingBlowService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args2))
+        startLoop("CrushingBlow", "CrushingBlowService")
+    else
+        stopLoop("CrushingBlow")
     end
 
-    -- Verifica e executa o terceiro script (DivergentFist)
     if Value["DivergentFist"] then
-        local args3 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("DivergentFistService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args3))
+        startLoop("DivergentFist", "DivergentFistService")
+    else
+        stopLoop("DivergentFist")
     end
 
-    -- Verifica e executa o quarto script (ManjiKick)
     if Value["ManjiKick"] then
-        local args4 = { [1] = false }
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ManjiKickService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args4))
+        startLoop("ManjiKick", "ManjiKickService")
+    else
+        stopLoop("ManjiKick")
     end
 end)
 
