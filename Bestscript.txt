@@ -589,7 +589,7 @@ SkillsDropdown4:OnChanged(function(Value)
 end)
 
 -- Toggle para ativar/desativar o Auto Farm
-local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Farm Random Players", Default = false })
+local Toggle = Tabs.AutoFarm:AddToggle("MyToggle", {Title = "Auto Farm Random Players", Default = false })
 
 -- Define uma variável para controlar o loop do Auto Farm
 local isAutoFarming = false
@@ -632,15 +632,23 @@ local function teleportToTarget()
         local targetCharacter = targetPlayer.Character
         local targetRootPart = targetCharacter:FindFirstChild("HumanoidRootPart")
 
-        if targetRootPart and humanoidRootPart then
-            -- Posiciona o personagem nas costas do jogador alvo
-            local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
-            humanoidRootPart.CFrame = CFrame.new(offset.Position)
+        -- Verifica se o alvo tem o HumanoidRootPart
+        if targetRootPart then
+            -- Verifica se o humanoidRootPart do personagem local está definido
+            if humanoidRootPart then
+                -- Posiciona o personagem nas costas do jogador alvo
+                local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
+                humanoidRootPart.CFrame = CFrame.new(offset.Position)
 
-            -- Faz o personagem ficar virado para o alvo
-            local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
-            humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
-            print("Teleportado para o alvo:", targetPlayer.Name)  -- Mensagem de debug para confirmação
+                -- Faz o personagem ficar virado para o alvo
+                local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
+                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
+                print("Teleportado para o alvo:", targetPlayer.Name)  -- Mensagem de debug para confirmação
+            else
+                print("HumanoidRootPart do personagem local não encontrado")
+            end
+        else
+            print("HumanoidRootPart do jogador alvo não encontrado")
         end
     else
         -- Se o jogador alvo não existe, escolhe um novo alvo
@@ -674,6 +682,7 @@ humanoidRootPart.Anchored = false  -- Mantém o personagem em movimento (sem anc
 spawn(function()
     while true do
         if isAutoFarming and targetPlayer then
+            -- Adiciona a verificação para garantir que o personagem do alvo ainda existe
             if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 teleportToTarget()
             else
