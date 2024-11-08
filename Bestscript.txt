@@ -632,7 +632,7 @@ local function teleportToTarget()
         local targetCharacter = targetPlayer.Character
         local targetRootPart = targetCharacter:FindFirstChild("HumanoidRootPart")
 
-        if targetRootPart then
+        if targetRootPart and humanoidRootPart then
             -- Posiciona o personagem nas costas do jogador alvo
             local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
             humanoidRootPart.CFrame = CFrame.new(offset.Position)
@@ -674,7 +674,12 @@ humanoidRootPart.Anchored = false  -- Mantém o personagem em movimento (sem anc
 spawn(function()
     while true do
         if isAutoFarming and targetPlayer then
-            teleportToTarget()
+            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                teleportToTarget()
+            else
+                -- Se o jogador não tiver o "HumanoidRootPart", escolhe outro jogador
+                targetPlayer = getRandomPlayer()
+            end
         end
         wait(0.1)  -- Atualiza frequentemente para garantir que o personagem siga o alvo e fique virado para ele
     end
