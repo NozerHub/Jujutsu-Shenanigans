@@ -709,6 +709,9 @@ end)
 -- Inicializa a lista de jogadores ao carregar o script
 updatePlayerList()
 
+-- Variável para armazenar o jogador selecionado
+local targetPlayer = nil
+
 -- Função de teleporte para o jogador selecionado no Dropdown
 local function teleportToSelectedPlayer(playerName)
     local targetPlayer = game.Players:FindFirstChild(playerName)
@@ -726,19 +729,55 @@ local function teleportToSelectedPlayer(playerName)
     end
 end
 
+-- Função para manter o personagem grudado nas costas do jogador
+local function keepStuckBehind(targetPlayer)
+    if targetPlayer and targetPlayer.Character then
+        local targetRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if targetRootPart then
+            local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            -- Posiciona o personagem nas costas do jogador alvo
+            local offset = targetRootPart.CFrame * CFrame.new(0, 0, 2)  -- Distância ajustada para mais perto
+            humanoidRootPart.CFrame = CFrame.new(offset.Position)
+
+            -- Faz o personagem ficar virado para o alvo
+            local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
+            humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
+        end
+    end
+end
+
+-- Atualiza o alvo com base na seleção do Dropdown
+Dropdown:OnChanged(function(Value)
+    targetPlayer = game.Players:FindFirstChild(Value)
+    print("Selecionado jogador:", Value)
+end)
+
 -- Adicionando o Button para teleportar para o jogador selecionado
 Tabs.Main:AddButton({
     Title = "Teleport to Selected Player",
     Callback = function()
         local selectedPlayer = Dropdown.Value
         if selectedPlayer then
-            teleportToSelectedPlayer(selectedPlayer)  -- Teleporta para o jogador escolhido
-            print("Teleportando para:", selectedPlayer)
+            targetPlayer = game.Players:FindFirstChild(selectedPlayer)
+            if targetPlayer then
+                teleportToSelectedPlayer(selectedPlayer)  -- Teleporta para o jogador escolhido
+                print("Teleportando para:", selectedPlayer)
+            end
         else
             print("Nenhum jogador selecionado.")
         end
     end
 })
+
+-- Loop para garantir que o personagem fique atrás do jogador selecionado sem se mover mais
+spawn(function()
+    while true do
+        if targetPlayer then
+            keepStuckBehind(targetPlayer)  -- Mantém o personagem nas costas do jogador alvo
+        end
+        wait(0.1)  -- Atualiza frequentemente para garantir que o personagem siga o alvo e fique virado para ele
+    end
+end)
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
