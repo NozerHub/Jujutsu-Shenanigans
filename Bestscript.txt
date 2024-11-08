@@ -589,28 +589,13 @@ SkillsDropdown4:OnChanged(function(Value)
 end)
 
 -- Toggle para ativar/desativar o Auto Farm
-local Toggle = Tabs.AutoFarm:AddToggle("MyToggle", {Title = "Auto Farm Random Players", Default = false })
+local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
+    Title = "Auto Farm Random Players",
+    Default = false,
+})
 
--- Define uma variável para controlar o loop do Auto Farm
 local isAutoFarming = false
 local targetPlayer = nil
-
-Toggle:OnChanged(function()
-    if Options.MyToggle.Value then
-        print("Auto Farm ativado")  -- Mensagem de debug para ativação
-        targetPlayer = getRandomPlayer()  -- Seleciona um alvo inicial
-        isAutoFarming = true
-    else
-        print("Auto Farm desativado")  -- Mensagem de debug para desativação
-        isAutoFarming = false
-        targetPlayer = nil  -- Reseta o alvo ao desativar
-    end
-end)
-
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
 -- Função para obter um jogador aleatório
 local function getRandomPlayer()
@@ -618,7 +603,7 @@ local function getRandomPlayer()
     local otherPlayers = {}
 
     for _, p in ipairs(players) do
-        if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+        if p ~= game.Players.LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
             table.insert(otherPlayers, p)
         end
     end
@@ -634,21 +619,15 @@ local function teleportToTarget()
 
         -- Verifica se o alvo tem o HumanoidRootPart
         if targetRootPart then
-            -- Verifica se o humanoidRootPart do personagem local está definido
-            if humanoidRootPart then
-                -- Posiciona o personagem nas costas do jogador alvo
-                local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
-                humanoidRootPart.CFrame = CFrame.new(offset.Position)
+            local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
 
-                -- Faz o personagem ficar virado para o alvo
-                local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
-                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
-                print("Teleportado para o alvo:", targetPlayer.Name)  -- Mensagem de debug para confirmação
-            else
-                print("HumanoidRootPart do personagem local não encontrado")
-            end
-        else
-            print("HumanoidRootPart do jogador alvo não encontrado")
+            -- Posiciona o personagem nas costas do jogador alvo
+            local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
+            humanoidRootPart.CFrame = CFrame.new(offset.Position)
+
+            -- Faz o personagem ficar virado para o alvo
+            local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
+            humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
         end
     else
         -- Se o jogador alvo não existe, escolhe um novo alvo
@@ -656,39 +635,24 @@ local function teleportToTarget()
     end
 end
 
--- Conectar função de morte ao evento de morte dos jogadores
-game.Players.PlayerRemoving:Connect(function(leavingPlayer)
-    if leavingPlayer == targetPlayer then
-        targetPlayer = getRandomPlayer()  -- Troca para um novo jogador se o alvo sair
+-- Controle da lógica do toggle
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        print("Auto Farm ativado")  -- Mensagem de debug para ativação
+        targetPlayer = getRandomPlayer()  -- Seleciona um alvo inicial
+        isAutoFarming = true
+    else
+        print("Auto Farm desativado")  -- Mensagem de debug para desativação
+        isAutoFarming = false
+        targetPlayer = nil  -- Reseta o alvo ao desativar
     end
 end)
-
--- Conectar evento de eliminação de jogador
-game.Players.PlayerAdded:Connect(function(newPlayer)
-    newPlayer.CharacterAdded:Connect(function(character)
-        character:WaitForChild("Humanoid").Died:Connect(function()
-            if newPlayer == targetPlayer then
-                targetPlayer = getRandomPlayer()  -- Troca para um novo jogador se o alvo for eliminado
-            end
-        end)
-    end)
-end)
-
--- Previne que o personagem caia e não se mova
-humanoid.PlatformStand = true
-humanoidRootPart.Anchored = false  -- Mantém o personagem em movimento (sem ancoragem)
 
 -- Loop para manter o personagem nas costas do jogador alvo enquanto o toggle estiver ativado
 spawn(function()
     while true do
         if isAutoFarming and targetPlayer then
-            -- Adiciona a verificação para garantir que o personagem do alvo ainda existe
-            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                teleportToTarget()
-            else
-                -- Se o jogador não tiver o "HumanoidRootPart", escolhe outro jogador
-                targetPlayer = getRandomPlayer()
-            end
+            teleportToTarget()
         end
         wait(0.1)  -- Atualiza frequentemente para garantir que o personagem siga o alvo e fique virado para ele
     end
