@@ -424,6 +424,7 @@ Tabs.AntiLag:AddButton({
     end
 })
 
+-- Dropdown para Skills 1
 local SkillsDropdown1 = Tabs.Skills:AddDropdown("SkillsDropdown1", {
     Title = "Skills 1",
     Values = { "LapseBlue", "ReversalRed", "RapidPunches", "TwofoldKick" },
@@ -431,6 +432,7 @@ local SkillsDropdown1 = Tabs.Skills:AddDropdown("SkillsDropdown1", {
     Default = {},
 })
 
+-- Dropdown para Skills 2
 local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
     Title = "Skills 2",
     Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
@@ -438,14 +440,16 @@ local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
     Default = {},
 })
 
-local runningScripts = {}
+local runningScripts1 = {}
+local runningScripts2 = {}
 
-local function startLoop(skillName, serviceName)
-    if runningScripts[skillName] then return end
-    runningScripts[skillName] = true
+-- Função para iniciar a execução contínua de uma habilidade
+local function startLoop(skillName, serviceName, scriptTable)
+    if scriptTable[skillName] then return end
+    scriptTable[skillName] = true
 
     spawn(function()
-        while runningScripts[skillName] do
+        while scriptTable[skillName] do
             local args = { [1] = false }
             game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild(serviceName):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
             wait(0.1)  -- Intervalo entre execuções
@@ -453,116 +457,62 @@ local function startLoop(skillName, serviceName)
     end)
 end
 
-local function stopLoop(skillName)
-    runningScripts[skillName] = nil
+-- Função para parar a execução contínua de uma habilidade
+local function stopLoop(skillName, scriptTable)
+    scriptTable[skillName] = nil
 end
 
+-- Lógica para o Dropdown 1 (Skills 1)
 SkillsDropdown1:OnChanged(function(Value)
-    -- Verifica e controla o loop de cada habilidade do Skills 1
     if Value["LapseBlue"] then
-        startLoop("LapseBlue", "LapseBlueService")
+        startLoop("LapseBlue", "LapseBlueService", runningScripts1)
     else
-        stopLoop("LapseBlue")
+        stopLoop("LapseBlue", runningScripts1)
     end
 
     if Value["ReversalRed"] then
-        startLoop("ReversalRed", "ReversalRedService")
+        startLoop("ReversalRed", "ReversalRedService", runningScripts1)
     else
-        stopLoop("ReversalRed")
+        stopLoop("ReversalRed", runningScripts1)
     end
 
     if Value["RapidPunches"] then
-        startLoop("RapidPunches", "RapidPunchesService")
+        startLoop("RapidPunches", "RapidPunchesService", runningScripts1)
     else
-        stopLoop("RapidPunches")
+        stopLoop("RapidPunches", runningScripts1)
     end
 
     if Value["TwofoldKick"] then
-        startLoop("TwofoldKick", "TwofoldKickService")
+        startLoop("TwofoldKick", "TwofoldKickService", runningScripts1)
     else
-        stopLoop("TwofoldKick")
+        stopLoop("TwofoldKick", runningScripts1)
     end
 end)
 
+-- Lógica para o Dropdown 2 (Skills 2)
 SkillsDropdown2:OnChanged(function(Value)
-    -- Verifica e controla o loop de cada habilidade do Skills 2
     if Value["CursedStrikes"] then
-        startLoop("CursedStrikes", "CursedStrikesService")
+        startLoop("CursedStrikes", "CursedStrikesService", runningScripts2)
     else
-        stopLoop("CursedStrikes")
+        stopLoop("CursedStrikes", runningScripts2)
     end
 
     if Value["CrushingBlow"] then
-        startLoop("CrushingBlow", "CrushingBlowService")
+        startLoop("CrushingBlow", "CrushingBlowService", runningScripts2)
     else
-        stopLoop("CrushingBlow")
+        stopLoop("CrushingBlow", runningScripts2)
     end
 
     if Value["DivergentFist"] then
-        startLoop("DivergentFist", "DivergentFistService")
+        startLoop("DivergentFist", "DivergentFistService", runningScripts2)
     else
-        stopLoop("DivergentFist")
+        stopLoop("DivergentFist", runningScripts2)
     end
 
     if Value["ManjiKick"] then
-        startLoop("ManjiKick", "ManjiKickService")
+        startLoop("ManjiKick", "ManjiKickService", runningScripts2)
     else
-        stopLoop("ManjiKick")
-    end
-end)
-
-local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
-    Title = "Skills 2",
-    Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
-    Multi = true,
-    Default = {},
-})
-
-local runningScripts = {}
-
-SkillsDropdown2:OnChanged(function(Value)
-    -- Função para iniciar a execução contínua de uma habilidade
-    local function startLoop(skillName, serviceName)
-        if runningScripts[skillName] then return end
-        runningScripts[skillName] = true
-
-        spawn(function()
-            while runningScripts[skillName] do
-                local args = { [1] = false }
-                game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild(serviceName):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
-                wait(0.1)  -- Intervalo entre execuções
-            end
-        end)
-    end
-
-    -- Função para parar a execução contínua de uma habilidade
-    local function stopLoop(skillName)
-        runningScripts[skillName] = nil
-    end
-
-    -- Verifica e controla o loop de cada habilidade com base na seleção
-    if Value["CursedStrikes"] then
-        startLoop("CursedStrikes", "CursedStrikesService")
-    else
-        stopLoop("CursedStrikes")
-    end
-
-    if Value["CrushingBlow"] then
-        startLoop("CrushingBlow", "CrushingBlowService")
-    else
-        stopLoop("CrushingBlow")
-    end
-
-    if Value["DivergentFist"] then
-        startLoop("DivergentFist", "DivergentFistService")
-    else
-        stopLoop("DivergentFist")
-    end
-
-    if Value["ManjiKick"] then
-        startLoop("ManjiKick", "ManjiKickService")
-    else
-        stopLoop("ManjiKick")
+        stopLoop("ManjiKick", runningScripts2)
     end
 end)
 
