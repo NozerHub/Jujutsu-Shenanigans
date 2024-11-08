@@ -756,13 +756,10 @@ end)
 Tabs.Main:AddButton({
     Title = "Teleport to Selected Player",
     Callback = function()
-        local selectedPlayer = Dropdown.Value
-        if selectedPlayer then
-            targetPlayer = game.Players:FindFirstChild(selectedPlayer)
-            if targetPlayer then
-                teleportToSelectedPlayer(selectedPlayer)  -- Teleporta para o jogador escolhido
-                print("Teleportando para:", selectedPlayer)
-            end
+        if targetPlayer then  -- Verifica se há um jogador selecionado
+            print("Teleportando para:", targetPlayer.Name)
+            -- Teleporta para o jogador escolhido
+            teleportToSelectedPlayer(targetPlayer.Name)
         else
             print("Nenhum jogador selecionado.")
         end
