@@ -39,7 +39,7 @@ Tabs.InfoScript:AddParagraph({
 
 local UpdatesSection = Tabs.InfoScript:AddSection("Updates")
 Tabs.InfoScript:AddParagraph({
-    Title = "Updates ",
+    Title = "Updates 🟢",
     Content = "- 7/11/2024"
 })
 
