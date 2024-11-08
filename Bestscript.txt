@@ -675,6 +675,71 @@ spawn(function()
     end
 end)
 
+-- Dropdown para selecionar jogadores
+local Dropdown = Tabs.Main:AddDropdown("PlayerDropdown", {
+    Title = "Select Player",
+    Values = {},  -- Lista de valores vazia inicialmente
+    Multi = false,
+    Default = 1,  -- Seleção padrão
+})
+
+-- Função para obter a lista de jogadores do servidor
+local function updatePlayerList()
+    local players = game.Players:GetPlayers()
+    local playerNames = {}
+
+    for _, p in ipairs(players) do
+        if p ~= game.Players.LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            table.insert(playerNames, p.Name)  -- Adiciona o nome do jogador à lista
+        end
+    end
+
+    Dropdown:SetValues(playerNames)  -- Atualiza os valores do Dropdown com os nomes dos jogadores
+end
+
+-- Atualiza a lista de jogadores sempre que houver uma mudança de jogador no servidor
+game.Players.PlayerAdded:Connect(function(player)
+    updatePlayerList()
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    updatePlayerList()
+end)
+
+-- Inicializa a lista de jogadores ao carregar o script
+updatePlayerList()
+
+-- Função de teleporte para o jogador selecionado no Dropdown
+local function teleportToSelectedPlayer(playerName)
+    local targetPlayer = game.Players:FindFirstChild(playerName)
+    
+    if targetPlayer and targetPlayer.Character then
+        local targetRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if targetRootPart then
+            local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            local offset = targetRootPart.CFrame * CFrame.new(0, 0, 2)  -- Distância ajustada para ficar atrás
+            humanoidRootPart.CFrame = CFrame.new(offset.Position)
+            -- Faz o personagem ficar virado para o alvo
+            local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
+            humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
+        end
+    end
+end
+
+-- Adicionando o Button para teleportar para o jogador selecionado
+Tabs.Main:AddButton({
+    Title = "Teleport to Selected Player",
+    Callback = function()
+        local selectedPlayer = Dropdown.Value
+        if selectedPlayer then
+            teleportToSelectedPlayer(selectedPlayer)  -- Teleporta para o jogador escolhido
+            print("Teleportando para:", selectedPlayer)
+        else
+            print("Nenhum jogador selecionado.")
+        end
+    end
+})
+
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 SaveManager:IgnoreThemeSettings()
