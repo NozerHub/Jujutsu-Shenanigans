@@ -1,0 +1,508 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Jujutsu Shenanigans  ",
+    SubTitle = "       By Nozer Hub | First Version",
+    TabWidth = 135,
+    Size = UDim2.fromOffset(500, 350),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    InfoScript = Window:AddTab({ Title = "Info Script", Icon = "scroll" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "home" }), 
+    SwitchFast = Window:AddTab({ Title = "Switch Fast", Icon = "repeat" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "list" }),
+    Skills = Window:AddTab({ Title = "Skills", Icon = "star" }), 
+    AntiLag = Window:AddTab({ Title = "Anti Lag", Icon = "shield" }),
+    Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+    Settings = Window:AddTab({ Title = "UI Settings", Icon = "settings" }),
+}
+
+local Options = Fluent.Options
+
+Fluent:Notify({
+    Title = "By Nozer Hub",
+    Content = "Thanks for using the script",
+    Duration = 5
+})
+
+local SupportSection = Tabs.InfoScript:AddSection("Support")
+Tabs.InfoScript:AddParagraph({
+    Title = "Supported Devices",
+    Content = "- Mobile\n- PC\n- Emulator\n- Console"
+})
+
+local UpdatesSection = Tabs.InfoScript:AddSection("Updates")
+Tabs.InfoScript:AddParagraph({
+    Title = "Updates ",
+    Content = "- 7/11/2024"
+})
+
+local SupportSection = Tabs.InfoScript:AddSection("Support Executors")
+Tabs.InfoScript:AddParagraph({
+    Title = "Executors",
+    Content = "- Delta\n- Fluxus\n- Arceus X\n- Wave\n- Codex"
+})
+
+local CreditsSection = Tabs.InfoScript:AddSection("Credits")
+local linkParaCopiar = "https://www.youtube.com/@NozerHub"
+Tabs.InfoScript:AddButton({
+    Title = "Copy Link Channel",
+    Callback = function()
+        setclipboard(linkParaCopiar)
+    end
+})
+
+local AttackSection = Tabs.Main:AddSection("Attack")
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Attack", Default = false })
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        while Toggle.Value do
+            local argsGojo = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsGojo))
+
+            local argsItadori = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsItadori))
+
+            local argsHakari = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsHakari))
+
+            local argsMegumi = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsMegumi))
+
+            wait(0.1)
+        end
+    end
+end)
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Dash Attack", Default = false })
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        while Toggle.Value do
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            wait(0.1)
+        end
+    end
+end)
+
+local AntiAFKEnabled = true
+local Toggle = Tabs.Misc:AddToggle("MyToggle", { Title = "Anti AFK", Default = true })
+Toggle:OnChanged(function()
+    AntiAFKEnabled = Options.MyToggle.Value
+end)
+Options.MyToggle:SetValue(true)
+
+Tabs.Misc:AddButton({
+    Title = "Server Hop",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local placeId = game.PlaceId
+
+        local function serverHop()
+            local servers
+            local cursor = ""
+
+            local success, response = pcall(function()
+                local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. cursor
+                return HttpService:JSONDecode(game:HttpGet(url))
+            end)
+
+            if success and response and response.data then
+                servers = response.data
+            else
+                return
+            end
+
+            for _, server in ipairs(servers) do
+                if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                    TeleportService:TeleportToPlaceInstance(placeId, server.id)
+                    return
+                end
+            end
+
+            if response.nextPageCursor then
+                cursor = response.nextPageCursor
+                serverHop()
+            else
+            end
+        end
+
+        serverHop()
+    end
+})
+
+Tabs.Misc:AddButton({
+    Title = "Rejoin",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local player = game.Players.LocalPlayer
+        TeleportService:Teleport(game.PlaceId, player)
+    end
+})
+
+local Dropdown = Tabs.SwitchFast:AddDropdown("Dropdown", {
+    Title = "Select",
+    Values = { "Honored One", "Vessel", "Restless Gambler", "Tem Shadows" },
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:SetValue("Honored One")
+
+local selectedValue
+Dropdown:OnChanged(function(Value)
+    selectedValue = Value
+end)
+
+Tabs.SwitchFast:AddButton({
+    Title = "Apply Character",
+    Callback = function()
+        if selectedValue == "Honored One" then
+            local args = { [1] = "Gojo" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Vessel" then
+            local args = { [1] = "Itadori" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Restless Gambler" then
+            local args = { [1] = "Hakari" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Tem Shadows" then
+            local args = { [1] = "Megumi" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+        end
+    end
+})
+
+local AutoPlaySection = Tabs.Main:AddSection("Auto Play")
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Play", Default = false })
+
+Toggle:OnChanged(function()
+    print("Toggle changed:", Options.MyToggle.Value)
+
+    local function getClosestPlayer()
+        local closestPlayer = nil
+        local closestDistance = math.huge  -- Inicializa com um valor muito alto
+
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            if otherPlayer ~= game.Players.LocalPlayer and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (otherPlayer.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                if distance < closestDistance then
+                    closestPlayer = otherPlayer
+                    closestDistance = distance
+                end
+            end
+        end
+        return closestPlayer
+    end
+
+    local function moveToClosestPlayer()
+        local closestPlayer = getClosestPlayer()
+        
+        if closestPlayer then
+            if closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPosition = closestPlayer.Character.HumanoidRootPart.Position
+                game.Players.LocalPlayer.Character.Humanoid:MoveTo(targetPosition)  -- Mover o personagem at� a posi��o do jogador mais pr�ximo
+            end
+        end
+    end
+
+    local function monitorPlayerStatus()
+        local closestPlayer = getClosestPlayer()
+
+        if closestPlayer then
+            -- Acompanhar morte do jogador
+            closestPlayer.CharacterAdded:Connect(function(character)
+                local humanoid = character:WaitForChild("Humanoid")
+                humanoid.Died:Connect(function()
+                    -- Jogador morreu, procuramos outro alvo
+                    print(closestPlayer.Name .. " morreu. Procurando novo alvo...")
+                end)
+            end)
+
+            closestPlayer.AncestryChanged:Connect(function(_, parent)
+                if not parent then
+                    -- Jogador saiu do servidor
+                    print(closestPlayer.Name .. " saiu do servidor. Procurando novo alvo...")
+                end
+            end)
+        end
+    end
+
+    -- Inicia o movimento e monitoramento quando o toggle for ativado
+    if Toggle.Value then
+        while Toggle.Value do
+            moveToClosestPlayer()
+            monitorPlayerStatus()
+            wait(1)
+        end
+    end
+end)
+
+Options.MyToggle:SetValue(false)
+
+local ViewSection = Tabs.Main:AddSection("View")
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Esp All Players", Default = false })
+
+local activeConnections = {}
+
+local function addESP(player)
+    if player == game.Players.LocalPlayer then
+        return
+    end
+
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = player.Character
+    highlight.Adornee = player.Character
+    highlight.FillColor = Color3.fromRGB(255, 0, 0)  -- Cor de preenchimento (vermelha)
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)  -- Cor do contorno (branca)
+    highlight.OutlineTransparency = 0.5  -- Transpar�ncia do contorno
+    highlight.FillTransparency = 0.2  -- Transpar�ncia do preenchimento
+    highlight.Enabled = true
+end
+
+local function removeESP(player)
+    if player.Character and player.Character:FindFirstChildOfClass("Highlight") then
+        player.Character:FindFirstChildOfClass("Highlight"):Destroy()
+    end
+end
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        -- Ativar ESP para todos os jogadores existentes
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Character then
+                addESP(player)
+            end
+        end
+
+        -- Conectar evento para adicionar ESP para novos jogadores que entram
+        local playerAddedConnection = game.Players.PlayerAdded:Connect(function(player)
+            player.CharacterAdded:Connect(function(character)
+                wait(1)
+                addESP(player)
+            end)
+        end)
+
+        -- Conectar evento para remover ESP quando um jogador sair
+        local playerRemovingConnection = game.Players.PlayerRemoving:Connect(function(player)
+            removeESP(player)
+        end)
+
+        table.insert(activeConnections, playerAddedConnection)
+        table.insert(activeConnections, playerRemovingConnection)
+
+    else
+        for _, player in pairs(game.Players:GetPlayers()) do
+            removeESP(player)
+        end
+
+        for _, connection in pairs(activeConnections) do
+            connection:Disconnect()
+        end
+
+        activeConnections = {}
+    end
+end)
+
+Options.MyToggle:SetValue(false)  -- Definir o toggle inicialmente como desligado
+
+Tabs.AntiLag:AddButton({
+    Title = "Anti Lag",
+    Description = "Click to disable effects and improve game performance.",
+    Callback = function()
+        -- Showing the dialog
+        Window:Dialog({
+            Title = "Performance Adjustment",
+            Content = "You are about to disable effects to improve performance.",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        -- Anti-lag script
+                        local ToDisable = {
+                            Textures = true,
+                            VisualEffects = true,
+                            Parts = true,
+                            Particles = true,
+                            Sky = true
+                        }
+
+                        local ToEnable = {
+                            FullBright = false
+                        }
+
+                        local Stuff = {}
+
+                        for _, v in next, game:GetDescendants() do
+                            if ToDisable.Parts then
+                                if v:IsA("Part") or v:IsA("Union") or v:IsA("BasePart") then
+                                    v.Material = Enum.Material.SmoothPlastic
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.Particles then
+                                if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Explosion") or v:IsA("Sparkles") or v:IsA("Fire") then
+                                    v.Enabled = false
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.VisualEffects then
+                                if v:IsA("BloomEffect") or v:IsA("BlurEffect") or v:IsA("DepthOfFieldEffect") or v:IsA("SunRaysEffect") then
+                                    v.Enabled = false
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.Textures then
+                                if v:IsA("Decal") or v:IsA("Texture") then
+                                    v.Texture = ""
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.Sky then
+                                if v:IsA("Sky") then
+                                    v.Parent = nil
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+                        end
+
+                        game:GetService("TestService"):Message("Effects Disabler Script : Successfully disabled "..#Stuff.." assets / effects. Settings :")
+
+                        for i, v in next, ToDisable do
+                            print(tostring(i)..": "..tostring(v))
+                        end
+
+                        if ToEnable.FullBright then
+                            local Lighting = game:GetService("Lighting")
+
+                            Lighting.FogColor = Color3.fromRGB(255, 255, 255)
+                            Lighting.FogEnd = math.huge
+                            Lighting.FogStart = math.huge
+                            Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+                            Lighting.Brightness = 5
+                            Lighting.ColorShift_Bottom = Color3.fromRGB(255, 255, 255)
+                            Lighting.ColorShift_Top = Color3.fromRGB(255, 255, 255)
+                            Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+                            Lighting.Outlines = true
+                        end
+                        print("Performance improved successfully!")
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Action canceled.")
+                    end
+                }
+            }
+        })
+    end
+})
+
+local MultiDropdown = Tabs.Skills:AddDropdown("MultiDropdown", {
+    Title = "Honored One",
+    Values = { "LapseBlue", "ReversalRed", "RapidPunches", "TwofoldKick" },
+    Multi = true,
+    Default = {},
+})
+
+MultiDropdown:OnChanged(function(Value)
+    -- Verifica e executa o primeiro script (LapseBlue)
+    if Value["LapseBlue"] then
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("LapseBlueService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer()
+    end
+
+    -- Verifica e executa o segundo script (ReversalRed)
+    if Value["ReversalRed"] then
+        local args1 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ReversalRedService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args1))
+    end
+
+    -- Verifica e executa o terceiro script (RapidPunches)
+    if Value["RapidPunches"] then
+        local args2 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RapidPunchesService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args2))
+    end
+
+    -- Verifica e executa o quarto script (TwofoldKick)
+    if Value["TwofoldKick"] then
+        local args3 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("TwofoldKickService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args3))
+    end
+end)
+
+local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
+    Title = "Skills 2",
+    Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
+    Multi = true,
+    Default = {},
+})
+
+SkillsDropdown2:OnChanged(function(Value)
+    -- Verifica e executa o primeiro script (CursedStrikes)
+    if Value["CursedStrikes"] then
+        local args1 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("CursedStrikesService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args1))
+    end
+
+    -- Verifica e executa o segundo script (CrushingBlow)
+    if Value["CrushingBlow"] then
+        local args2 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("CrushingBlowService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args2))
+    end
+
+    -- Verifica e executa o terceiro script (DivergentFist)
+    if Value["DivergentFist"] then
+        local args3 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("DivergentFistService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args3))
+    end
+
+    -- Verifica e executa o quarto script (ManjiKick)
+    if Value["ManjiKick"] then
+        local args4 = { [1] = false }
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ManjiKickService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args4))
+    end
+end)
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+SaveManager:LoadAutoloadConfig()
