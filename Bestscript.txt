@@ -437,7 +437,7 @@ local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
     Title = "Skills 2",
     Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
     Multi = true,
-    Default = {Skills 2},
+    Default = {},
 })
 
 -- Dropdown para Skills 3
