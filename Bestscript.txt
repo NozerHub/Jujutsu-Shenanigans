@@ -630,8 +630,18 @@ local function teleportToTarget()
             humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
         end
     else
-        -- Se o jogador alvo não existe, escolhe um novo alvo
+        -- Se o jogador alvo não existe ou morreu, escolhe um novo alvo
         targetPlayer = getRandomPlayer()
+    end
+end
+
+-- Função para monitorar a morte do jogador
+local function monitorPlayerDeath()
+    if targetPlayer and targetPlayer.Character then
+        targetPlayer.Character:WaitForChild("Humanoid").Died:Connect(function()
+            print(targetPlayer.Name .. " morreu. Buscando novo alvo...")
+            targetPlayer = getRandomPlayer()  -- Troca para um novo jogador se o alvo morrer
+        end)
     end
 end
 
@@ -640,6 +650,7 @@ Toggle:OnChanged(function()
     if Toggle.Value then
         print("Auto Farm ativado")  -- Mensagem de debug para ativação
         targetPlayer = getRandomPlayer()  -- Seleciona um alvo inicial
+        monitorPlayerDeath()  -- Inicia a monitoração da morte do jogador alvo
         isAutoFarming = true
     else
         print("Auto Farm desativado")  -- Mensagem de debug para desativação
