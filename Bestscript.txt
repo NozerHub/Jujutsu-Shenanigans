@@ -593,6 +593,7 @@ local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Farm Random Player
 
 -- Define uma variável para controlar o loop do Auto Farm
 local isAutoFarming = false
+local targetPlayer = nil
 
 Toggle:OnChanged(function()
     if Options.MyToggle.Value then
@@ -610,7 +611,6 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-local targetPlayer = nil
 
 -- Função para obter um jogador aleatório
 local function getRandomPlayer()
@@ -634,7 +634,7 @@ local function teleportToTarget()
 
         if targetRootPart then
             -- Posiciona o personagem nas costas do jogador alvo
-            local offset = targetRootPart.CFrame * CFrame.new(0, 0, 1)  -- Distância ajustada para mais perto
+            local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
             humanoidRootPart.CFrame = CFrame.new(offset.Position)
 
             -- Faz o personagem ficar virado para o alvo
@@ -668,7 +668,7 @@ end)
 
 -- Previne que o personagem caia e não se mova
 humanoid.PlatformStand = true
-humanoidRootPart.Anchored = true  -- Desabilita a física
+humanoidRootPart.Anchored = false  -- Mantém o personagem em movimento (sem ancoragem)
 
 -- Loop para manter o personagem nas costas do jogador alvo enquanto o toggle estiver ativado
 spawn(function()
