@@ -590,7 +590,7 @@ end)
 
 -- Toggle para ativar/desativar o Auto Farm
 local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
-    Title = "Auto Farm Random Players",
+    Title = "Kill Farm",
     Default = false,
 })
 
@@ -602,16 +602,18 @@ local function getRandomPlayer()
     local players = game.Players:GetPlayers()
     local otherPlayers = {}
 
+    -- Filtra os jogadores que não sejam o próprio jogador
     for _, p in ipairs(players) do
         if p ~= game.Players.LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
             table.insert(otherPlayers, p)
         end
     end
 
+    -- Retorna um jogador aleatório
     return #otherPlayers > 0 and otherPlayers[math.random(1, #otherPlayers)] or nil
 end
 
--- Função para teleportar e alinhar o personagem
+-- Função para teleportar e alinhar o personagem atrás do jogador alvo
 local function teleportToTarget()
     if targetPlayer and targetPlayer.Character then
         local targetCharacter = targetPlayer.Character
@@ -621,8 +623,8 @@ local function teleportToTarget()
         if targetRootPart then
             local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
 
-            -- Posiciona o personagem nas costas do jogador alvo
-            local offset = targetRootPart.CFrame * CFrame.new(0, 0, -2)  -- Distância ajustada para mais perto (negativa para ficar atrás)
+            -- Posiciona o personagem atrás do jogador alvo (com distância ajustada)
+            local offset = targetRootPart.CFrame * CFrame.new(0, 0, 2)  -- Distância ajustada para ficar atrás
             humanoidRootPart.CFrame = CFrame.new(offset.Position)
 
             -- Faz o personagem ficar virado para o alvo
@@ -630,17 +632,17 @@ local function teleportToTarget()
             humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
         end
     else
-        -- Se o jogador alvo não existe ou morreu, escolhe um novo alvo
+        -- Se o jogador alvo não existe, escolhe um novo alvo
         targetPlayer = getRandomPlayer()
     end
 end
 
--- Função para monitorar a morte do jogador
+-- Função para monitorar a morte do jogador e trocar de alvo
 local function monitorPlayerDeath()
     if targetPlayer and targetPlayer.Character then
         targetPlayer.Character:WaitForChild("Humanoid").Died:Connect(function()
-            print(targetPlayer.Name .. " morreu. Buscando novo alvo...")
-            targetPlayer = getRandomPlayer()  -- Troca para um novo jogador se o alvo morrer
+            print(targetPlayer.Name .. " morreu, trocando de alvo.")
+            targetPlayer = getRandomPlayer()  -- Troca para um novo jogador quando o alvo morre
         end)
     end
 end
@@ -662,8 +664,12 @@ end)
 -- Loop para manter o personagem nas costas do jogador alvo enquanto o toggle estiver ativado
 spawn(function()
     while true do
-        if isAutoFarming and targetPlayer then
-            teleportToTarget()
+        if isAutoFarming then
+            if targetPlayer then
+                teleportToTarget()  -- Teleporta para o jogador atual
+            else
+                targetPlayer = getRandomPlayer()  -- Se o alvo não existe mais, escolhe um novo
+            end
         end
         wait(0.1)  -- Atualiza frequentemente para garantir que o personagem siga o alvo e fique virado para ele
     end
