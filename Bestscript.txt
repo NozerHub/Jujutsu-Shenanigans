@@ -712,7 +712,7 @@ updatePlayerList()
 -- Variável para armazenar o jogador selecionado
 local targetPlayer = nil
 
--- Função de teleporte para o jogador selecionado no Dropdown
+-- Função para teleporte para o jogador selecionado no Dropdown
 local function teleportToSelectedPlayer(playerName)
     local targetPlayer = game.Players:FindFirstChild(playerName)
     
@@ -769,7 +769,7 @@ Tabs.Main:AddButton({
     end
 })
 
--- Loop para garantir que o personagem fique atrás do jogador selecionado sem se mover mais
+-- Loop para garantir que o personagem fique atrás do jogador selecionado
 spawn(function()
     while true do
         if targetPlayer then
