@@ -437,7 +437,7 @@ local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
     Title = "Skills 2",
     Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
     Multi = true,
-    Default = {},
+    Default = {Skills 2},
 })
 
 -- Dropdown para Skills 3
@@ -448,18 +448,30 @@ local SkillsDropdown3 = Tabs.Skills:AddDropdown("SkillsDropdown3", {
     Default = {},
 })
 
+-- Dropdown para Skills 4
+local SkillsDropdown4 = Tabs.Skills:AddDropdown("SkillsDropdown4", {
+    Title = "Skills 4",
+    Values = { "RabbitEscape", "Nue", "DivineDog" },
+    Multi = true,
+    Default = {},
+})
+
 local runningScripts1 = {}
 local runningScripts2 = {}
 local runningScripts3 = {}
+local runningScripts4 = {}
 
 -- Função para iniciar a execução contínua de uma habilidade
-local function startLoop(skillName, serviceName, scriptTable)
+local function startLoop(skillName, serviceName, scriptTable, extraArgs)
     if scriptTable[skillName] then return end
     scriptTable[skillName] = true
 
     spawn(function()
         while scriptTable[skillName] do
             local args = { [1] = false }
+            if extraArgs then
+                args = extraArgs
+            end
             game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild(serviceName):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
             wait(0.1)  -- Intervalo entre execuções
         end
@@ -549,6 +561,30 @@ SkillsDropdown3:OnChanged(function(Value)
         startLoop("FeverBreaker", "FeverBreakerService", runningScripts3)
     else
         stopLoop("FeverBreaker", runningScripts3)
+    end
+end)
+
+-- Lógica para o Dropdown 4 (Skills 4)
+SkillsDropdown4:OnChanged(function(Value)
+    if Value["RabbitEscape"] then
+        local args = {
+            [1] = workspace:WaitForChild("Characters"):WaitForChild("King_Raspberries")
+        }
+        startLoop("RabbitEscape", "RabbitEscapeService", runningScripts4, args)
+    else
+        stopLoop("RabbitEscape", runningScripts4)
+    end
+
+    if Value["Nue"] then
+        startLoop("Nue", "NueService", runningScripts4)
+    else
+        stopLoop("Nue", runningScripts4)
+    end
+
+    if Value["DivineDog"] then
+        startLoop("DivineDog", "DivineDogService", runningScripts4)
+    else
+        stopLoop("DivineDog", runningScripts4)
     end
 end)
 
