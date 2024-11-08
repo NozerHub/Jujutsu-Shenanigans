@@ -20,7 +20,7 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    InfoScript = Window:AddTab({ Title = "Info Script", Icon = "scroll" }),
+    ScriptInfo= Window:AddTab({ Title = "Script Info", Icon = "scroll" }),
     Main = Window:AddTab({ Title = "Main", Icon = "home" }), 
     Skills = Window:AddTab({ Title = "Skills", Icon = "star" }), 
     Others = Window:AddTab({ Title = "Others", Icon = "folder" }),
@@ -41,27 +41,27 @@ Fluent:Notify({
     Duration = 5
 })
 
-local SupportSection = Tabs.InfoScript:AddSection("Support")
-Tabs.InfoScript:AddParagraph({
+local SupportSection = Tabs.ScriptInfo:AddSection("Support")
+Tabs.ScriptInfo:AddParagraph({
     Title = "Supported Devices",
     Content = "- Mobile\n- PC\n- Emulator\n- Console"
 })
 
-local UpdatesSection = Tabs.InfoScript:AddSection("Updates")
-Tabs.InfoScript:AddParagraph({
+local UpdatesSection = Tabs.ScriptInfo:AddSection("Updates")
+Tabs.ScriptInfo:AddParagraph({
     Title = "Updates",
     Content = "- 8/11/2024"
 })
 
-local SupportSection = Tabs.InfoScript:AddSection("Support Executors")
-Tabs.InfoScript:AddParagraph({
+local SupportSection = Tabs.ScriptInfo:AddSection("Support Executors")
+Tabs.ScriptInfo:AddParagraph({
     Title = "Executors",
     Content = "- Delta\n- Fluxus\n- Arceus X\n- Wave\n- Codex"
 })
 
-local CreditsSection = Tabs.InfoScript:AddSection("Credits")
+local CreditsSection = Tabs.ScriptInfo:AddSection("Credits")
 local linkParaCopiar = "https://www.youtube.com/@NozerHub"
-Tabs.InfoScript:AddButton({
+Tabs.ScriptInfo:AddButton({
     Title = "Copy Link Channel",
     Callback = function()
         setclipboard(linkParaCopiar)
@@ -989,116 +989,14 @@ Toggle:OnChanged(function()
     end
 end)
 
-local BlackFlashScriptOPSection = Tabs.Others:AddSection("Black Flash Script OP")
 
 Tabs.Others:AddButton({
-    Title = "Black Flash",
+    Title = "Auto Black Flash",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/black_flash_GUI/refs/heads/main/README.md"))()
     end
 })
 
-local minSpeed = 16
-local maxSpeed = 100
-
--- Define a velocidade padrão
-local defaultSpeed = 16
-
--- Função para ajustar a velocidade
-local function setWalkSpeed(speed)
-    local player = game.Players.LocalPlayer
-    if player and player.Character and player.Character:FindFirstChild("Humanoid") then
-        player.Character.Humanoid.WalkSpeed = speed
-    end
-end
-
--- Cria o input para definir a velocidade
-local Input = Tabs.LocalPlayer:AddInput("Input", {
-    Title = "Speed",
-    Default = tostring(defaultSpeed),
-    Placeholder = "Enter speed",
-    Numeric = true, -- Permite apenas números
-    Finished = true, -- Chama o callback apenas ao pressionar enter
-    Callback = function(Value)
-        print("Input changed:", Value)
-    end
-})
-
--- Cria o toggle para ativar a velocidade
-local Toggle = Tabs.LocalPlayer:AddToggle("MyToggle", { Title = "Apply Speed", Default = false })
-
-Toggle:OnChanged(function()
-    -- Converte o valor do input para número
-    local speed = tonumber(Input.Value)
-    
-    if Toggle.Value then
-        -- Se o toggle estiver ativo e o valor for válido, ajusta a velocidade
-        if speed and speed >= minSpeed and speed <= maxSpeed then
-            setWalkSpeed(speed)
-            print("Velocidade ajustada para:", speed)
-        else
-            print("Insira um valor entre " .. minSpeed .. " e " .. maxSpeed)
-        end
-    else
-        -- Se o toggle estiver inativo, volta para a velocidade padrão
-        setWalkSpeed(defaultSpeed)
-        print("Velocidade ajustada para o padrão:", defaultSpeed)
-    end
-end)
-
--- Configura o toggle como falso ao iniciar
-Options.MyToggle:SetValue(false)
-
-local minJump = 50
-local maxJump = 200
-
--- Define o valor padrão do Jump
-local defaultJump = 50
-
--- Função para ajustar o Jump Power
-local function setJumpPower(power)
-    local player = game.Players.LocalPlayer
-    if player and player.Character and player.Character:FindFirstChild("Humanoid") then
-        player.Character.Humanoid.JumpPower = power
-    end
-end
-
--- Cria o input para definir o Jump Power
-local Input = Tabs.LocalPlayer:AddInput("Input", {
-    Title = "Jump Power",
-    Default = tostring(defaultJump),
-    Placeholder = "Enter jump power",
-    Numeric = true, -- Permite apenas números
-    Finished = true, -- Chama o callback apenas ao pressionar enter
-    Callback = function(Value)
-        print("Input changed:", Value)
-    end
-})
-
--- Cria o toggle para ativar o Jump Power
-local Toggle = Tabs.LocalPlayer:AddToggle("MyJumpToggle", { Title = "Apply Jump", Default = false })
-
-Toggle:OnChanged(function()
-    -- Converte o valor do input para número
-    local jumpPower = tonumber(Input.Value)
-    
-    if Toggle.Value then
-        -- Se o toggle estiver ativo e o valor for válido, ajusta o Jump Power
-        if jumpPower and jumpPower >= minJump and jumpPower <= maxJump then
-            setJumpPower(jumpPower)
-            print("Jump Power ajustado para:", jumpPower)
-        else
-            print("Insira um valor entre " .. minJump .. " e " .. maxJump)
-        end
-    else
-        -- Se o toggle estiver inativo, volta para o valor padrão do Jump Power
-        setJumpPower(defaultJump)
-        print("Jump Power ajustado para o padrão:", defaultJump)
-    end
-end)
-
--- Configura o toggle como falso ao iniciar
-Options.MyJumpToggle:SetValue(false)
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
