@@ -5,7 +5,7 @@ if placeId ~= allowedPlaceId then
     return
 end
 
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/NozerHub/Jujutsu-Shenanigans/refs/heads/main/Bestscript.txt"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
@@ -105,6 +105,33 @@ Toggle:OnChanged(function()
         end
     end
 end)
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Awaken", Default = false })
+
+Toggle:OnChanged(function()
+    print("Toggle changed:", Options.MyToggle.Value)
+end)
+
+Options.MyToggle:SetValue(false)
+
+while true do
+    if Options.MyToggle.Value then
+        -- Executar o comando para GojoService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para ItadoriService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para HakariService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para MegumiService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+    end
+
+    -- Aguardar um intervalo antes de verificar o toggle novamente
+    wait(1)
+end
 
 -- Toggle para ativar/desativar o Auto Farm
 local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
@@ -943,33 +970,6 @@ Toggle:OnChanged(function()
 end)
 
 Options.AntiFlingToggle:SetValue(false)
-
-local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Awaken", Default = false })
-
-Toggle:OnChanged(function()
-    print("Toggle changed:", Options.MyToggle.Value)
-end)
-
-Options.MyToggle:SetValue(false)
-
-while true do
-    if Options.MyToggle.Value then
-        -- Executar o comando para GojoService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para ItadoriService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para HakariService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para MegumiService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-    end
-
-    -- Aguardar um intervalo antes de verificar o toggle novamente
-    wait(1)
-end
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
