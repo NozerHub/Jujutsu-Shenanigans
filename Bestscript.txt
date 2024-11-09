@@ -170,12 +170,10 @@ end
 -- Controle da lógica do toggle
 Toggle:OnChanged(function()
     if Toggle.Value then
-        print("Auto Farm ativado")  -- Mensagem de debug para ativação
         targetPlayer = getRandomPlayer()  -- Seleciona um alvo inicial
         monitorPlayerDeath()  -- Inicia a monitoração da morte do jogador alvo
         isAutoFarming = true
     else
-        print("Auto Farm desativado")  -- Mensagem de debug para desativação
         isAutoFarming = false
         targetPlayer = nil  -- Reseta o alvo ao desativar
     end
@@ -321,21 +319,20 @@ Toggle:OnChanged(function()
     local function monitorPlayerStatus()
         local closestPlayer = getClosestPlayer()
 
-        if closestPlayer then
-            closestPlayer.CharacterAdded:Connect(function(character)
-                local humanoid = character:WaitForChild("Humanoid")
-                humanoid.Died:Connect(function()
-                    print(closestPlayer.Name .. " morreu. Procurando novo alvo...")
-                end)
-            end)
+if closestPlayer then
+    closestPlayer.CharacterAdded:Connect(function(character)
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.Died:Connect(function()
+            -- Ação quando o jogador morre
+        end)
+    end)
 
-            closestPlayer.AncestryChanged:Connect(function(_, parent)
-                if not parent then
-                    print(closestPlayer.Name .. " saiu do servidor. Procurando novo alvo...")
-                end
-            end)
+    closestPlayer.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            -- Ação quando o jogador sai do servidor
         end
-    end
+    end)
+end
 
     -- Interrompe o movimento quando o toggle for desativado
     if not autoPlayActive then
@@ -429,7 +426,7 @@ end)
 
 -- Ação quando o toggle é alterado
 Toggle:OnChanged(function()
-    print("Toggle changed:", Toggle.Value)
+    -- Ação quando o valor do toggle é alterado
 end)
 
 local Toggle = Tabs.ESP:AddToggle("NametagESP", {
@@ -672,13 +669,12 @@ Tabs.AntiLag:AddButton({
                     Callback = function()
                         -- Load and execute the FPS Unlocker (Anti Lag) script
                         loadstring(game:HttpGet('https://raw.githubusercontent.com/vexroxd/My-Script-/main/roblox%20fps%20unlocker%20script.lua'))()
-                        print("Anti Lag activated.")
                     end
                 },
                 {
                     Title = "Cancel",
                     Callback = function()
-                        print("Cancelled.")
+                        -- Ação em caso de cancelamento
                     end
                 }
             }
