@@ -26,7 +26,6 @@ local Tabs = {
     Others = Window:AddTab({ Title = "Others", Icon = "folder" }),
     ESP = Window:AddTab({ Title = "ESP", Icon = "eye" }),
     SwitchFast = Window:AddTab({ Title = "Switch Fast", Icon = "repeat" }),
-    Counter = Window:AddTab({ Title = "Counter", Icon = "clock" }),
     Misc = Window:AddTab({ Title = "Misc", Icon = "list" }),
     AntiLag = Window:AddTab({ Title = "Anti Lag", Icon = "shield" }),
     Settings = Window:AddTab({ Title = "UI Settings", Icon = "settings" }),
@@ -853,91 +852,6 @@ SkillsDropdown4:OnChanged(function(Value)
     end
 end)
 
-local Toggle = Tabs.Counter:AddToggle("NoStunToggle", {
-    Title = "Enable No Stun", 
-    Default = false,
-    Description = "Activate to prevent the player from being stunned or knocked back."
-})
-
-Toggle:OnChanged(function()
-    if Toggle.Value then
-        -- Ativa o script de No Stun
-        print("No Stun activated")
-        
-        -- Cria uma conexão para remover o stun
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-
-        -- Função para remover status de stun
-        local function removeStun()
-            for _, status in pairs(character:GetChildren()) do
-                if status:IsA("BoolValue") and (status.Name == "Stun" or status.Name == "Knockback") then
-                    status:Destroy()
-                end
-            end
-        end
-
-        -- Conecta a função ao RunService enquanto o toggle estiver ativo
-        local connection
-        connection = game:GetService("RunService").Stepped:Connect(function()
-            if not Toggle.Value then
-                -- Desativa a conexão se o toggle estiver desligado
-                connection:Disconnect()
-                print("No Stun deactivated")
-            else
-                removeStun()
-            end
-        end)
-    else
-        print("No Stun deactivated")
-    end
-end)
-
-Options.NoStunToggle:SetValue(false)
-
-local Toggle = Tabs.Counter:AddToggle("NoSprintToggle", {
-    Title = "Enable No Anti Sprint", 
-    Default = false,
-    Description = "Enable to remove sprint restrictions and set the desired sprint speed."
-})
-
-Toggle:OnChanged(function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-
-    local function removeAntiSprint()
-        humanoid.WalkSpeed = 50  -- Set desired sprint speed
-        humanoid.AutoRotate = true  -- Ensure the character rotates automatically
-    end
-
-    local function resetSprint()
-        humanoid.WalkSpeed = 16  -- Normal walking speed
-    end
-
-    if Toggle.Value then
-        -- Activates the removal of Anti Sprint
-        print("No Anti Sprint activated")
-        removeAntiSprint()
-
-        -- Checks if the toggle is still active every frame
-        game:GetService("RunService").Stepped:Connect(function()
-            if not Toggle.Value then
-                -- If the toggle is deactivated, reset the speed
-                resetSprint()
-            else
-                removeAntiSprint()
-            end
-        end)
-    else
-        -- Deactivates No Anti Sprint, returning to normal speed
-        print("No Anti Sprint deactivated")
-        resetSprint()
-    end
-end)
-
-Options.NoSprintToggle:SetValue(false)
-
 Tabs.Others:AddButton({
     Title = "Aimbot",
     Callback = function()
@@ -994,43 +908,6 @@ Tabs.Others:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/black_flash_GUI/refs/heads/main/README.md"))()
     end
 })
-
-local Toggle = Tabs.Counter:AddToggle("AntiFlingToggle", {
-    Title = "Enable Anti Fling",
-    Default = false,
-    Description = "Prevents the player from being flung by other players."
-})
-
-Toggle:OnChanged(function()
-    if Toggle.Value then
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-        local RunService = game:GetService("RunService")
-        
-        -- Anti Fling Function
-        local antiFlingConnection = RunService.Heartbeat:Connect(function()
-            for _, player in ipairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer and player.Character then
-                    local character = player.Character
-                    local rootPart = character:FindFirstChild("HumanoidRootPart")
-                    if rootPart and rootPart.Velocity.Magnitude > 100 then
-                        rootPart.Velocity = Vector3.new(0, 0, 0)
-                        rootPart.RotVelocity = Vector3.new(0, 0, 0)
-                    end
-                end
-            end
-        end)
-
-        -- Disables Anti Fling when the toggle is turned off
-        Toggle:OnChanged(function()
-            if not Toggle.Value then
-                antiFlingConnection:Disconnect()
-            end
-        end)
-    end
-end)
-
-Options.AntiFlingToggle:SetValue(false)
 
 -- Toggle para Auto Awaken
 local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false })
