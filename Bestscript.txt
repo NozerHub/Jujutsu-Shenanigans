@@ -11,7 +11,7 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 
 local Window = Fluent:CreateWindow({
     Title = "Jujutsu Shenanigans",
-    SubTitle = "       By Nozer Hub | First Version",
+    SubTitle = "        By Nozer Hub | First Version",
     TabWidth = 135,
     Size = UDim2.fromOffset(500, 350),
     Acrylic = true,
@@ -48,7 +48,7 @@ Tabs.ScriptInfo:AddParagraph({
 local UpdatesSection = Tabs.ScriptInfo:AddSection("Updates")
 Tabs.ScriptInfo:AddParagraph({
     Title = "Updates",
-    Content = "- 8/11/2024"
+    Content = "- 9/11/2024"
 })
 
 local SupportSection = Tabs.ScriptInfo:AddSection("Support Executors")
@@ -286,8 +286,6 @@ Tabs.SwitchFast:AddButton({
         end
     end
 })
-
-local AutoPlaySection = Tabs.Main:AddSection("Auto Play")
 
 local Toggle = Tabs.Main:AddToggle("MyToggle", { Title = "Auto Play", Default = false })
 local autoPlayActive = false  -- Variável para controlar o loop
@@ -852,6 +850,26 @@ SkillsDropdown4:OnChanged(function(Value)
     end
 end)
 
+-- Configurações de Interface e Salvar Configurações
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+SaveManager:LoadAutoloadConfig()
+
+
 Tabs.Others:AddButton({
     Title = "Aimbot",
     Callback = function()
@@ -859,7 +877,8 @@ Tabs.Others:AddButton({
     end
 })
 
-local Toggle = Tabs.Others:AddToggle("NoclipToggle", {
+-- Configuração de Toggles sem sobrescrever outros
+local NoclipToggle = Tabs.Others:AddToggle("NoclipToggle", {
     Title = "Noclip", 
     Default = false,
 })
@@ -885,8 +904,8 @@ character.DescendantAdded:Connect(function(part)
 end)
 
 -- Toggle para ativar ou desativar o noclip
-Toggle:OnChanged(function()
-    noclipEnabled = Toggle.Value
+NoclipToggle:OnChanged(function()
+    noclipEnabled = NoclipToggle.Value
     if noclipEnabled then
         while noclipEnabled do
             disableCollision()
@@ -901,14 +920,6 @@ Toggle:OnChanged(function()
     end
 end)
 
-
-Tabs.Others:AddButton({
-    Title = "Auto Black Flash",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/black_flash_GUI/refs/heads/main/README.md"))()
-    end
-})
-
 -- Toggle para Auto Awaken
 local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false })
 
@@ -916,8 +927,7 @@ AutoAwakenToggle:OnChanged(function()
     print("Toggle changed:", AutoAwakenToggle.Value)
 end)
 
-Options.AutoAwakenToggle:SetValue(false)
-
+-- Loop para verificar o estado do Auto Awaken e executar o comando quando ativado
 while true do
     if AutoAwakenToggle.Value then
         -- Executar o comando para GojoService
@@ -933,23 +943,5 @@ while true do
         game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
     end
 
-    wait(1)
+    wait(1) -- Intervalo antes de verificar o estado do toggle novamente
 end
-
-SaveManager:SetLibrary(Fluent)
-InterfaceManager:SetLibrary(Fluent)
-SaveManager:IgnoreThemeSettings()
-SaveManager:SetIgnoreIndexes({})
-InterfaceManager:SetFolder("FluentScriptHub")
-SaveManager:SetFolder("FluentScriptHub/specific-game")
-InterfaceManager:BuildInterfaceSection(Tabs.Settings)
-SaveManager:BuildConfigSection(Tabs.Settings)
-
-Window:SelectTab(1)
-Fluent:Notify({
-    Title = "Fluent",
-    Content = "The script has been loaded.",
-    Duration = 8
-})
-
-SaveManager:LoadAutoloadConfig()
