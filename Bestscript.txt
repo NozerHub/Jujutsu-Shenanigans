@@ -109,33 +109,6 @@ AutoDashAttackToggle:OnChanged(function()
     end
 end)
 
--- Toggle para Auto Awaken
-local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false })
-
-AutoAwakenToggle:OnChanged(function()
-    print("Toggle changed:", AutoAwakenToggle.Value)
-end)
-
-Options.AutoAwakenToggle:SetValue(false)
-
-while true do
-    if AutoAwakenToggle.Value then
-        -- Executar o comando para GojoService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para ItadoriService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para HakariService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para MegumiService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-    end
-
-    wait(1)
-end
-
 -- Toggle para ativar/desativar o Auto Farm
 local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
     Title = "Kill Farm",
@@ -1058,6 +1031,33 @@ Toggle:OnChanged(function()
 end)
 
 Options.AntiFlingToggle:SetValue(false)
+
+-- Toggle para Auto Awaken
+local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false })
+
+AutoAwakenToggle:OnChanged(function()
+    print("Toggle changed:", AutoAwakenToggle.Value)
+end)
+
+Options.AutoAwakenToggle:SetValue(false)
+
+while true do
+    if AutoAwakenToggle.Value then
+        -- Executar o comando para GojoService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para ItadoriService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para HakariService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para MegumiService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+    end
+
+    wait(1)
+end
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
