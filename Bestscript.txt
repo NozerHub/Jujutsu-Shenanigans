@@ -10,7 +10,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Jujutsu Shenanigans  ",
+    Title = "Jujutsu Shenanigans",
     SubTitle = "       By Nozer Hub | First Version",
     TabWidth = 135,
     Size = UDim2.fromOffset(500, 350),
@@ -67,11 +67,12 @@ Tabs.ScriptInfo:AddButton({
     end
 })
 
-local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Attack", Default = false })
+-- Toggle para Auto Attack
+local AutoAttackToggle = Tabs.Main:AddToggle("AutoAttackToggle", {Title = "Auto Attack", Default = false })
 
-Toggle:OnChanged(function()
-    if Toggle.Value then
-        while Toggle.Value do
+AutoAttackToggle:OnChanged(function()
+    if AutoAttackToggle.Value then
+        while AutoAttackToggle.Value do
             local argsGojo = { [1] = false }
             game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsGojo))
 
@@ -89,11 +90,12 @@ Toggle:OnChanged(function()
     end
 end)
 
-local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Dash Attack", Default = false })
+-- Toggle para Auto Dash Attack
+local AutoDashAttackToggle = Tabs.Main:AddToggle("AutoDashAttackToggle", {Title = "Auto Dash Attack", Default = false })
 
-Toggle:OnChanged(function()
-    if Toggle.Value then
-        while Toggle.Value do
+AutoDashAttackToggle:OnChanged(function()
+    if AutoDashAttackToggle.Value then
+        while AutoDashAttackToggle.Value do
             game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
 
             game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
@@ -107,16 +109,17 @@ Toggle:OnChanged(function()
     end
 end)
 
-local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Awaken", Default = false })
+-- Toggle para Auto Awaken
+local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false })
 
-Toggle:OnChanged(function()
-    print("Toggle changed:", Options.MyToggle.Value)
+AutoAwakenToggle:OnChanged(function()
+    print("Toggle changed:", AutoAwakenToggle.Value)
 end)
 
-Options.MyToggle:SetValue(false)
+Options.AutoAwakenToggle:SetValue(false)
 
 while true do
-    if Options.MyToggle.Value then
+    if AutoAwakenToggle.Value then
         -- Executar o comando para GojoService
         game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
         
@@ -130,7 +133,6 @@ while true do
         game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
     end
 
-    -- Aguardar um intervalo antes de verificar o toggle novamente
     wait(1)
 end
 
