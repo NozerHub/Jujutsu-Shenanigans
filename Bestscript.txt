@@ -67,8 +67,6 @@ Tabs.ScriptInfo:AddButton({
     end
 })
 
-local AttackSection = Tabs.Main:AddSection("Attack")
-
 local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Attack", Default = false })
 
 Toggle:OnChanged(function()
@@ -996,7 +994,7 @@ Tabs.Others:AddButton({
 })
 
 local Toggle = Tabs.Counter:AddToggle("AntiFlingToggle", {
-    Title = "Anti Fling",
+    Title = "Enable Anti Fling",
     Default = false,
     Description = "Prevents the player from being flung by other players."
 })
