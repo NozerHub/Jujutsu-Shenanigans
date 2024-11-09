@@ -26,7 +26,6 @@ local Tabs = {
     Others = Window:AddTab({ Title = "Others", Icon = "folder" }),
     ESP = Window:AddTab({ Title = "ESP", Icon = "eye" }),
     SwitchFast = Window:AddTab({ Title = "Switch Fast", Icon = "repeat" }),
-    LocalPlayer = Window:AddTab({ Title = "Local Player", Icon = "user" }),
     Counter = Window:AddTab({ Title = "Counter", Icon = "clock" }),
     Misc = Window:AddTab({ Title = "Misc", Icon = "list" }),
     AntiLag = Window:AddTab({ Title = "Anti Lag", Icon = "shield" }),
@@ -949,7 +948,6 @@ Tabs.Others:AddButton({
 local Toggle = Tabs.Others:AddToggle("NoclipToggle", {
     Title = "Noclip", 
     Default = false,
-    Description = "Enable to let the character pass through walls and disable collision."
 })
 
 local player = game.Players.LocalPlayer
