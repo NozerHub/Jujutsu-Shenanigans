@@ -997,6 +997,42 @@ Tabs.Others:AddButton({
     end
 })
 
+local Toggle = Tabs.Counter:AddToggle("AntiFlingToggle", {
+    Title = "Anti Fling",
+    Default = false,
+    Description = "Prevents the player from being flung by other players."
+})
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local RunService = game:GetService("RunService")
+        
+        -- Anti Fling Function
+        local antiFlingConnection = RunService.Heartbeat:Connect(function()
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character then
+                    local character = player.Character
+                    local rootPart = character:FindFirstChild("HumanoidRootPart")
+                    if rootPart and rootPart.Velocity.Magnitude > 100 then
+                        rootPart.Velocity = Vector3.new(0, 0, 0)
+                        rootPart.RotVelocity = Vector3.new(0, 0, 0)
+                    end
+                end
+            end
+        end)
+
+        -- Disables Anti Fling when the toggle is turned off
+        Toggle:OnChanged(function()
+            if not Toggle.Value then
+                antiFlingConnection:Disconnect()
+            end
+        end)
+    end
+end)
+
+Options.AntiFlingToggle:SetValue(false)
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
