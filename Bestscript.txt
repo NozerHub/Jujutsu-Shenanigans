@@ -26,7 +26,6 @@ local Tabs = {
     Others = Window:AddTab({ Title = "Others", Icon = "folder" }),
     ESP = Window:AddTab({ Title = "ESP", Icon = "eye" }),
     SwitchFast = Window:AddTab({ Title = "Switch Fast", Icon = "repeat" }),
-    Counter = Window:AddTab({ Title = "Counter", Icon = "clock" }),
     Misc = Window:AddTab({ Title = "Misc", Icon = "list" }),
     AntiLag = Window:AddTab({ Title = "Anti Lag", Icon = "shield" }),
     Settings = Window:AddTab({ Title = "UI Settings", Icon = "settings" }),
@@ -851,91 +850,6 @@ SkillsDropdown4:OnChanged(function(Value)
     end
 end)
 
-local Toggle = Tabs.Counter:AddToggle("NoStunToggle", {
-    Title = "Enable No Stun", 
-    Default = false,
-    Description = "Activate to prevent the player from being stunned or knocked back."
-})
-
-Toggle:OnChanged(function()
-    if Toggle.Value then
-        -- Ativa o script de No Stun
-        print("No Stun activated")
-        
-        -- Cria uma conexão para remover o stun
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-
-        -- Função para remover status de stun
-        local function removeStun()
-            for _, status in pairs(character:GetChildren()) do
-                if status:IsA("BoolValue") and (status.Name == "Stun" or status.Name == "Knockback") then
-                    status:Destroy()
-                end
-            end
-        end
-
-        -- Conecta a função ao RunService enquanto o toggle estiver ativo
-        local connection
-        connection = game:GetService("RunService").Stepped:Connect(function()
-            if not Toggle.Value then
-                -- Desativa a conexão se o toggle estiver desligado
-                connection:Disconnect()
-                print("No Stun deactivated")
-            else
-                removeStun()
-            end
-        end)
-    else
-        print("No Stun deactivated")
-    end
-end)
-
-Options.NoStunToggle:SetValue(false)
-
-local Toggle = Tabs.Counter:AddToggle("NoSprintToggle", {
-    Title = "Enable No Anti Sprint", 
-    Default = false,
-    Description = "Enable to remove sprint restrictions and set the desired sprint speed."
-})
-
-Toggle:OnChanged(function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-
-    local function removeAntiSprint()
-        humanoid.WalkSpeed = 50  -- Set desired sprint speed
-        humanoid.AutoRotate = true  -- Ensure the character rotates automatically
-    end
-
-    local function resetSprint()
-        humanoid.WalkSpeed = 16  -- Normal walking speed
-    end
-
-    if Toggle.Value then
-        -- Activates the removal of Anti Sprint
-        print("No Anti Sprint activated")
-        removeAntiSprint()
-
-        -- Checks if the toggle is still active every frame
-        game:GetService("RunService").Stepped:Connect(function()
-            if not Toggle.Value then
-                -- If the toggle is deactivated, reset the speed
-                resetSprint()
-            else
-                removeAntiSprint()
-            end
-        end)
-    else
-        -- Deactivates No Anti Sprint, returning to normal speed
-        print("No Anti Sprint deactivated")
-        resetSprint()
-    end
-end)
-
-Options.NoSprintToggle:SetValue(false)
-
 Tabs.Others:AddButton({
     Title = "Aimbot",
     Callback = function()
@@ -1029,6 +943,33 @@ Toggle:OnChanged(function()
 end)
 
 Options.AntiFlingToggle:SetValue(false)
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", {Title = "Auto Awaken", Default = false })
+
+Toggle:OnChanged(function()
+    print("Toggle changed:", Options.MyToggle.Value)
+end)
+
+Options.MyToggle:SetValue(false)
+
+while true do
+    if Options.MyToggle.Value then
+        -- Executar o comando para GojoService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para ItadoriService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para HakariService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        
+        -- Executar o comando para MegumiService
+        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+    end
+
+    -- Aguardar um intervalo antes de verificar o toggle novamente
+    wait(1)
+end
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
