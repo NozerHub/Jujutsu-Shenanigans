@@ -11,7 +11,7 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 
 local Window = Fluent:CreateWindow({
     Title = "Jujutsu Shenanigans By Nozer Hub",
-    SubTitle = "        Latest Version!",
+    SubTitle = "          Latest Version!",
     TabWidth = 135,
     Size = UDim2.fromOffset(500, 350),
     Acrylic = true,
@@ -51,8 +51,8 @@ local UpdatesSection = Tabs.Info:AddSection("Updates")
 UpdatesSection:AddParagraph({
     Title = "Updates ✅",
     Content = [[
-    - 9/11/2024
-    - 15/11/2024
+   - 9/11/2024
+   - 15/11/2024
     ]]
 })
 
@@ -972,4 +972,27 @@ SkillsToggle:OnChanged(function()
     end
 end)
 
+Options.SkillsToggle:SetValue(false)
+
+-- Toggle para ativar as 3 Skills
+local SkillsToggle = Tabs.Skills:AddToggle("SkillsToggle", {Title = "Skills 2", Default = false})
+
+SkillsToggle:OnChanged(function()
+    if SkillsToggle.Value then
+        while SkillsToggle.Value and task.wait() do
+            local args = { [1] = false }
+
+            -- Executar o comando para DismantleSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("DismantleService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            -- Executar o comando para FlameArrowSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("FlameArrowService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            -- Executar o comando para RushSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RushService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+        end
+    end
+end)
+
+-- Desativa o toggle inicialmente
 Options.SkillsToggle:SetValue(false)
