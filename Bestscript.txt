@@ -47,7 +47,7 @@ Tabs.ScriptInfo:AddParagraph({
 
 local UpdatesSection = Tabs.ScriptInfo:AddSection("Updates")
 Tabs.ScriptInfo:AddParagraph({
-    Title = "Updates",
+    Title = "Updates ✅",
     Content = "- 9/11/2024"
 })
 
