@@ -50,7 +50,10 @@ SupportSection:AddParagraph({
 local UpdatesSection = Tabs.Info:AddSection("Updates")
 UpdatesSection:AddParagraph({
     Title = "Updates ✅",
-    Content = "- 9/11/2024\n- 15/11/2024"
+    Content = [[
+    - 9/11/2024
+    - 15/11/2024
+    ]]
 })
 
 -- Seção de Suporte para Executores
