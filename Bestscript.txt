@@ -10,8 +10,8 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Jujutsu Shenanigans",
-    SubTitle = "        By Nozer Hub | First Version",
+    Title = "Jujutsu Shenanigans | Nozer Hub",
+    SubTitle = "        Latest version!",
     TabWidth = 135,
     Size = UDim2.fromOffset(500, 350),
     Acrylic = true,
@@ -945,8 +945,8 @@ while true do
 end
 
 local MultiDropdown = Tabs.Skills:AddDropdown("MultiDropdown", {
-    Title = "Skill 1",
-    Values = {"LapseBlueMax", "ReversalRedMax", "HollowPurple", "InfiniteVoid"},
+    Title = "Dropdown",
+    Values = {"LapseBlueMaxService", "ReversalRedMaxService", "HollowPurpleService", "InfiniteVoidService"},
     Multi = true,
     Default = {}, -- Começa sem nada ativado
 })
