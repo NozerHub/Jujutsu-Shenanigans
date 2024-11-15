@@ -20,7 +20,7 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    ScriptInfo= Window:AddTab({ Title = "Script Info", Icon = "scroll" }),
+    Info  = Window:AddTab({ Title = "Info", Icon = "scroll" }),
     Main = Window:AddTab({ Title = "Main", Icon = "home" }), 
     Skills = Window:AddTab({ Title = "Skills", Icon = "star" }), 
     Others = Window:AddTab({ Title = "Others", Icon = "folder" }),
@@ -39,27 +39,27 @@ Fluent:Notify({
     Duration = 5
 })
 
-local SupportSection = Tabs.ScriptInfo:AddSection("Support")
-Tabs.ScriptInfo:AddParagraph({
+local SupportSection = Tabs.Info:AddSection("Support")
+Tabs.Info:AddParagraph({
     Title = "Supported Devices",
     Content = "- Mobile\n- PC\n- Emulator\n- Console"
 })
 
-local UpdatesSection = Tabs.ScriptInfo:AddSection("Updates")
-Tabs.ScriptInfo:AddParagraph({
+local UpdatesSection = Tabs.Info:AddSection("Updates")
+Tabs.Info:AddParagraph({
     Title = "Updates ✅",
-    Content = "- 9/11/2024"
+    Content = "- 9/11/2024\n- 15/11/2024"
 })
 
-local SupportSection = Tabs.ScriptInfo:AddSection("Support Executors")
-Tabs.ScriptInfo:AddParagraph({
+local SupportSection = Tabs.Info:AddSection("Support Executors")
+Tabs.Info:AddParagraph({
     Title = "Executors",
     Content = "- Delta\n- Fluxus\n- Arceus X\n- Wave\n- Codex"
 })
 
-local CreditsSection = Tabs.ScriptInfo:AddSection("Credits")
+local CreditsSection = Tabs.Info:AddSection("Credits")
 local linkParaCopiar = "https://www.youtube.com/@NozerHub"
-Tabs.ScriptInfo:AddButton({
+Tabs.Info:AddButton({
     Title = "Copy Link Channel",
     Callback = function()
         setclipboard(linkParaCopiar)
@@ -946,41 +946,26 @@ while true do
     wait(1) -- Intervalo antes de verificar o estado do toggle novamente
 end
 
-local MultiDropdown = Tabs.Skills:AddDropdown("MultiDropdown", {
-    Title = "Dropdown",
-    Values = {"LapseBlueMaxService", "ReversalRedMaxService", "HollowPurpleService", "InfiniteVoidService"},
-    Multi = true,
-    Default = {}, -- Começa sem nada ativado
-})
+local AwakenSkillsSection = Tabs.Skills:AddSection("Awaken Skills")
 
--- Tabela para armazenar o estado dos serviços
-local activeServices = {}
+local Toggle = Tabs.Skills:AddToggle("MyToggle", {Title = "Skills 1", Default = false})
 
-MultiDropdown:OnChanged(function(selectedServices)
-    -- Atualiza os serviços ativos conforme as seleções no dropdown
-    for serviceName, isActive in pairs(selectedServices) do
-        activeServices[serviceName] = isActive
-    end
-end)
+Toggle:OnChanged(function()
+    if Options.MyToggle.Value then
+        while Options.MyToggle.Value and task.wait() do
+            local args = {
+                [1] = false
+            }
 
--- Loop para executar os serviços ativos
-task.spawn(function()
-    while task.wait() do
-        for serviceName, isActive in pairs(activeServices) do
-            if isActive then
-                local args = {
-                    [1] = false
-                }
-
-                game:GetService("ReplicatedStorage")
-                    :WaitForChild("Knit")
-                    :WaitForChild("Knit")
-                    :WaitForChild("Services")
-                    :WaitForChild(serviceName)
-                    :WaitForChild("RE")
-                    :WaitForChild("Activated")
-                    :FireServer(unpack(args))
-            end
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("LapseBlueMaxService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ReversalRedMaxService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HollowPurpleService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InfiniteVoidService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
         end
     end
 end)
+
+Options.MyToggle:SetValue(false)
