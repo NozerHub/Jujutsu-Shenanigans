@@ -48,7 +48,7 @@ Tabs.ScriptInfo:AddParagraph({
 local UpdatesSection = Tabs.ScriptInfo:AddSection("Updates")
 Tabs.ScriptInfo:AddParagraph({
     Title = "Updates ✅",
-    Content = "- 9/11/2024"
+    Content = "- 9/11/2024\n- 15/11/2024"
 })
 
 local SupportSection = Tabs.ScriptInfo:AddSection("Support Executors")
@@ -357,7 +357,6 @@ Toggle:OnChanged(function()
 end)
 
 Options.MyToggle:SetValue(false)
-
 
 -- Criação do toggle para ativar/desativar o ESP
 local Toggle = Tabs.ESP:AddToggle("MyToggle", { Title = "Players ESP", Default = false })
@@ -869,7 +868,6 @@ Fluent:Notify({
 
 SaveManager:LoadAutoloadConfig()
 
-
 Tabs.Others:AddButton({
     Title = "Aimbot",
     Callback = function()
@@ -945,3 +943,42 @@ while true do
 
     wait(1) -- Intervalo antes de verificar o estado do toggle novamente
 end
+
+local MultiDropdown = Tabs.Skills:AddDropdown("MultiDropdown", {
+    Title = "Skill 1",
+    Values = {"LapseBlueMax", "ReversalRedMax", "HollowPurple", "InfiniteVoid"},
+    Multi = true,
+    Default = {}, -- Começa sem nada ativado
+})
+
+-- Tabela para armazenar o estado dos serviços
+local activeServices = {}
+
+MultiDropdown:OnChanged(function(selectedServices)
+    -- Atualiza os serviços ativos conforme as seleções no dropdown
+    for serviceName, isActive in pairs(selectedServices) do
+        activeServices[serviceName] = isActive
+    end
+end)
+
+-- Loop para executar os serviços ativos
+task.spawn(function()
+    while task.wait() do
+        for serviceName, isActive in pairs(activeServices) do
+            if isActive then
+                local args = {
+                    [1] = false
+                }
+
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Knit")
+                    :WaitForChild("Knit")
+                    :WaitForChild("Services")
+                    :WaitForChild(serviceName)
+                    :WaitForChild("RE")
+                    :WaitForChild("Activated")
+                    :FireServer(unpack(args))
+            end
+        end
+    end
+end)
