@@ -39,20 +39,23 @@ Fluent:Notify({
     Duration = 5
 })
 
+-- Seção de Suporte
 local SupportSection = Tabs.Info:AddSection("Support")
-Tabs.Info:AddParagraph({
+SupportSection:AddParagraph({
     Title = "Supported Devices",
     Content = "- Mobile\n- PC\n- Emulator\n- Console"
 })
 
+-- Seção de Updates
 local UpdatesSection = Tabs.Info:AddSection("Updates")
-Tabs.Info:AddParagraph({
+UpdatesSection:AddParagraph({
     Title = "Updates ✅",
     Content = "- 9/11/2024\n- 15/11/2024"
 })
 
-local SupportSection = Tabs.Info:AddSection("Support Executors")
-Tabs.Info:AddParagraph({
+-- Seção de Suporte para Executores
+local ExecutorsSection = Tabs.Info:AddSection("Support Executors")
+ExecutorsSection:AddParagraph({
     Title = "Executors",
     Content = "- Delta\n- Fluxus\n- Arceus X\n- Wave\n- Codex"
 })
@@ -921,38 +924,36 @@ NoclipToggle:OnChanged(function()
 end)
 
 -- Toggle para Auto Awaken
-local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false })
+local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false})
 
 AutoAwakenToggle:OnChanged(function()
-    print("Toggle changed:", AutoAwakenToggle.Value)
+    if Options.AutoAwakenToggle.Value then
+        while Options.AutoAwakenToggle.Value and task.wait() do
+            -- Executar o comando para GojoService
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+            
+            -- Executar o comando para ItadoriService
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+            
+            -- Executar o comando para HakariService
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+            
+            -- Executar o comando para MegumiService
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        end
+    end
 end)
 
--- Loop para verificar o estado do Auto Awaken e executar o comando quando ativado
-while true do
-    if AutoAwakenToggle.Value then
-        -- Executar o comando para GojoService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para ItadoriService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para HakariService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-        
-        -- Executar o comando para MegumiService
-        game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
-    end
+Options.AutoAwakenToggle:SetValue(false)
 
-    wait(1) -- Intervalo antes de verificar o estado do toggle novamente
-end
-
+-- Seção de Skills
 local AwakenSkillsSection = Tabs.Skills:AddSection("Awaken Skills")
 
-local Toggle = Tabs.Skills:AddToggle("MyToggle", {Title = "Skills 1", Default = false})
+local SkillsToggle = Tabs.Skills:AddToggle("SkillsToggle", {Title = "Skills 1", Default = false})
 
-Toggle:OnChanged(function()
-    if Options.MyToggle.Value then
-        while Options.MyToggle.Value and task.wait() do
+SkillsToggle:OnChanged(function()
+    if Options.SkillsToggle.Value then
+        while Options.SkillsToggle.Value and task.wait() do
             local args = {
                 [1] = false
             }
@@ -968,4 +969,4 @@ Toggle:OnChanged(function()
     end
 end)
 
-Options.MyToggle:SetValue(false)
+Options.SkillsToggle:SetValue(false)
