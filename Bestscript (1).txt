@@ -974,8 +974,10 @@ end)
 
 Options.SkillsToggle:SetValue(false)
 
--- Toggle para ativar as 3 Skills
-local SkillsToggle = Tabs.Skills:AddToggle("SkillsToggle", {Title = "Skills 2", Default = false})
+local AwakenSkillsSection = Tabs.Skills:AddSection("Awaken Skills")
+
+-- Toggle para ativar as 4 Skills
+local SkillsToggle = Tabs.Skills:AddToggle("SkillsToggle", {Title = "Awaken Skills", Default = false})
 
 SkillsToggle:OnChanged(function()
     if SkillsToggle.Value then
@@ -990,9 +992,62 @@ SkillsToggle:OnChanged(function()
             
             -- Executar o comando para RushSkill
             game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RushService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            -- Executar o comando para MalevolantShrineSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MalevolantShrineService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
         end
     end
 end)
 
 -- Desativa o toggle inicialmente
 Options.SkillsToggle:SetValue(false)
+
+local AwakenSkillsSection = Tabs.Skills:AddSection("Awaken Skills")
+
+-- Toggle para ativar as novas 4 Skills
+local SkillsToggle2 = Tabs.Skills:AddToggle("SkillsToggle2", {Title = "Skills 3", Default = false})
+
+SkillsToggle2:OnChanged(function()
+    if SkillsToggle2.Value then
+        while SkillsToggle2.Value and task.wait() do
+            local args = { [1] = false }
+
+            -- Executar o comando para ReserveBallSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ReserveBallService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            -- Executar o comando para ShutterDoorSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ShutterDoorService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer()
+
+            -- Executar o comando para RoughEnergySkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RoughEnergyService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            -- Executar o comando para FeverBreakerSkill
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("FeverBreakerService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+        end
+    end
+end)
+
+-- Desativa o toggle inicialmente
+Options.SkillsToggle2:SetValue(false)
+
+local SkillsToggle3 = Tabs.Skills:AddToggle("SkillsToggle3", {Title = "Skills 4", Default = false})
+
+SkillsToggle3:OnChanged(function()
+    if Options.SkillsToggle3.Value then
+        while Options.SkillsToggle3.Value and task.wait() do
+            local args = {
+                [1] = false
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MaxElephantService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GreatSerpentService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ShadowSwarmService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MahoragaUseService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer()
+        end
+    end
+end)
+
+Options.SkillsToggle3:SetValue(false)
