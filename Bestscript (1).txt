@@ -50,8 +50,6 @@ Tabs.Info:AddButton({
     end
 })
 
--- /// AUTO ATTACK /// --
-
 local AutoAttackToggle = Tabs.Main:AddToggle("AutoAttackToggle", {Title = "Auto Attack", Default = false })
 
 AutoAttackToggle:OnChanged(function()
@@ -74,8 +72,6 @@ AutoAttackToggle:OnChanged(function()
     end
 end)
 
--- /// AUTO DASH ATTACK /// --
-
 local AutoDashAttackToggle = Tabs.Main:AddToggle("AutoDashAttackToggle", {Title = "Auto Dash Attack", Default = false })
 
 AutoDashAttackToggle:OnChanged(function()
@@ -93,8 +89,6 @@ AutoDashAttackToggle:OnChanged(function()
         end
     end
 end)
-
--- /// KILL FARM /// --
 
 local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
     Title = "Kill Farm",
@@ -167,16 +161,12 @@ spawn(function()
     end
 end)
 
--- /// ANTI AFK /// --
-
 local AntiAFKEnabled = true
 local Toggle = Tabs.Misc:AddToggle("MyToggle", { Title = "Anti AFK", Default = true })
 Toggle:OnChanged(function()
     AntiAFKEnabled = Options.MyToggle.Value
 end)
 Options.MyToggle:SetValue(true)
-
--- /// SERVER HOP /// --
 
 Tabs.Misc:AddButton({
     Title = "Server Hop",
@@ -218,8 +208,6 @@ Tabs.Misc:AddButton({
     end
 })
 
--- /// REJOIN /// --
-
 Tabs.Misc:AddButton({
     Title = "Rejoin",
     Callback = function()
@@ -228,8 +216,6 @@ Tabs.Misc:AddButton({
         TeleportService:Teleport(game.PlaceId, player)
     end
 })
-
--- /// SWITCH FAST /// --
 
 local Dropdown = Tabs.SwitchFast:AddDropdown("Dropdown", {
     Title = "Select",
@@ -266,8 +252,6 @@ Tabs.SwitchFast:AddButton({
         end
     end
 })
-
--- /// AUTO PLAY /// --
 
 local Toggle = Tabs.Main:AddToggle("MyToggle", { Title = "Auto Play", Default = false })
 local autoPlayActive = false
@@ -335,8 +319,6 @@ Toggle:OnChanged(function()
 end)
 
 Options.MyToggle:SetValue(false)
-
--- /// ESP /// --
 
 local Toggle = Tabs.ESP:AddToggle("MyToggle", { Title = "Players ESP", Default = false })
 
@@ -525,8 +507,6 @@ Toggle:OnChanged(function()
         end
     end
 end)
-
--- /// ANTI LAG /// --
 
 Options.HealthESP:SetValue(false)
 
@@ -806,16 +786,12 @@ SkillsDropdown4:OnChanged(function(Value)
     end
 end)
 
--- /// AIMBOT /// --
-
 Tabs.Others:AddButton({
     Title = "Aimbot",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/yzeedw/Mortalv2-main/main/UNIVERSAL%20AIMBOT"))()
     end
 })
-
--- /// NOCLIP /// --
 
 local NoclipToggle = Tabs.Others:AddToggle("NoclipToggle", {
     Title = "Noclip", 
@@ -855,8 +831,6 @@ NoclipToggle:OnChanged(function()
         end
     end
 end)
-
--- /// AUTO AWAKEN /// --
 
 local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false})
 
