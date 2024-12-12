@@ -31,8 +31,6 @@ local Tabs = {
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
--- /// ANTI KICK /// --
-
 local Options = Fluent.Options
 
 Fluent:Notify({
@@ -629,8 +627,6 @@ Tabs.AntiLag:AddButton({
         })
     end
 })
-
--- /// SKILLS /// --
 
 local SkillsDropdown1 = Tabs.Skills:AddDropdown("SkillsDropdown1", {
     Title = "Skills 1",
