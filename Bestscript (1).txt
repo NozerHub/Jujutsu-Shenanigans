@@ -33,55 +33,6 @@ local Tabs = {
 
 -- /// ANTI KICK ///
 
-if getgenv().ED_AntiKick then
-    return
-end
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-getgenv().ED_AntiKick = {
-    Enabled = true,
-    SendNotifications = false,
-    CheckCaller = true,
-}
-
-local function onPlayerDisconnect(player)
-    if getgenv().ED_AntiKick.Enabled and player == Players.LocalPlayer then
-        player:LoadCharacter()
-    end
-end
-
-local OldNamecall
-OldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = {...}
-    local methodName = getnamecallmethod()
-
-    if methodName == "Kick" and getgenv().ED_AntiKick.CheckCaller then
-        local caller = debug.getinfo(2)
-        if caller and caller.source and caller.source:match("Player") then
-            return
-        end
-    end
-
-    return OldNamecall(self, ...)
-end)
-
-Players.PlayerRemoving:Connect(function(player)
-    if player == Players.LocalPlayer then
-        onPlayerDisconnect(player)
-    end
-end)
-
-if getgenv().ED_AntiKick.Enabled then
-    game:GetService("Players").PlayerAdded:Connect(function(player)
-        if player == Players.LocalPlayer then
-            player.CharacterAdded:Connect(function(character)
-            end)
-        end
-    end)
-end
-
 local Options = Fluent.Options
 
 Fluent:Notify({
