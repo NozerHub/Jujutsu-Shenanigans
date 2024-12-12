@@ -1,0 +1,943 @@
+local placeId = game.PlaceId
+local allowedPlaceId = 9391468976
+
+if placeId ~= allowedPlaceId then
+    return
+end
+
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "game:GetService("MarketplaceService"):GetProductInfo(9391468976).Name .. " | Nozer Hub",
+    SubTitle = "Full Version",
+    TabWidth = 120,
+    Size = UDim2.fromOffset(500, 350),
+    Acrylic = false,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Info  = Window:AddTab({ Title = "Info", Icon = "info" }),
+    Main = Window:AddTab({ Title = "Auto Farm", Icon = "activity" }), 
+    Skills = Window:AddTab({ Title = "Skills", Icon = "star" }), 
+    Others = Window:AddTab({ Title = "Others", Icon = "box" }),
+    ESP = Window:AddTab({ Title = "ESP", Icon = "eye" }),
+    SwitchFast = Window:AddTab({ Title = "Switch Fast", Icon = "repeat" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "codesandbox" }),
+    AntiLag = Window:AddTab({ Title = "Anti Lag", Icon = "shield" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
+}
+
+-- /// ANTI KICK /// --
+
+local Options = Fluent.Options
+
+Fluent:Notify({
+    Title = "By Nozer Hub",
+    Content = "Thanks for using the script",
+    Duration = 3
+})
+
+local CreditsSection = Tabs.Info:AddSection("Credits")
+local linkParaCopiar = "https://www.youtube.com/@NozerHub"
+Tabs.Info:AddButton({
+    Title = "Copy Link Channel",
+    Callback = function()
+        setclipboard(linkParaCopiar)
+    end
+})
+
+local AutoAttackToggle = Tabs.Main:AddToggle("AutoAttackToggle", {Title = "Auto Attack", Default = false })
+
+AutoAttackToggle:OnChanged(function()
+    if AutoAttackToggle.Value then
+        while AutoAttackToggle.Value do
+            local argsGojo = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsGojo))
+
+            local argsItadori = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsItadori))
+
+            local argsHakari = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsHakari))
+
+            local argsMegumi = { [1] = false }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(argsMegumi))
+
+            wait(0.1)
+        end
+    end
+end)
+
+local AutoDashAttackToggle = Tabs.Main:AddToggle("AutoDashAttackToggle", {Title = "Auto Dash Attack", Default = false })
+
+AutoDashAttackToggle:OnChanged(function()
+    if AutoDashAttackToggle.Value then
+        while AutoDashAttackToggle.Value do
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Chase"):FireServer()
+
+            wait(0.1)
+        end
+    end
+end)
+
+local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
+    Title = "Kill Farm",
+    Default = false,
+})
+
+local isAutoFarming = false
+local targetPlayer = nil
+
+local function getRandomPlayer()
+    local players = game.Players:GetPlayers()
+    local otherPlayers = {}
+
+    for _, p in ipairs(players) do
+        if p ~= game.Players.LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            table.insert(otherPlayers, p)
+        end
+    end
+
+    return #otherPlayers > 0 and otherPlayers[math.random(1, #otherPlayers)] or nil
+end
+
+local function teleportToTarget()
+    if targetPlayer and targetPlayer.Character then
+        local targetCharacter = targetPlayer.Character
+        local targetRootPart = targetCharacter:FindFirstChild("HumanoidRootPart")
+
+        if targetRootPart then
+            local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            local offset = targetRootPart.CFrame * CFrame.new(0, 0, 2)
+            humanoidRootPart.CFrame = CFrame.new(offset.Position)
+
+            local direction = (targetRootPart.Position - humanoidRootPart.Position).unit
+            humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRootPart.Position + direction)
+        end
+    else
+        targetPlayer = getRandomPlayer()
+    end
+end
+
+local function monitorPlayerDeath()
+    if targetPlayer and targetPlayer.Character then
+        targetPlayer.Character:WaitForChild("Humanoid").Died:Connect(function()
+            targetPlayer = getRandomPlayer()
+        end)
+    end
+end
+
+Toggle:OnChanged(function()
+    if Toggle.Value then
+        targetPlayer = getRandomPlayer()
+        monitorPlayerDeath()
+        isAutoFarming = true
+    else
+        isAutoFarming = false
+        targetPlayer = nil
+    end
+end)
+
+spawn(function()
+    while true do
+        if isAutoFarming then
+            if targetPlayer then
+                teleportToTarget()
+            else
+                targetPlayer = getRandomPlayer()
+            end
+        end
+        wait(0.1)
+    end
+end)
+
+local AntiAFKEnabled = true
+local Toggle = Tabs.Misc:AddToggle("MyToggle", { Title = "Anti AFK", Default = true })
+Toggle:OnChanged(function()
+    AntiAFKEnabled = Options.MyToggle.Value
+end)
+Options.MyToggle:SetValue(true)
+
+Tabs.Misc:AddButton({
+    Title = "Server Hop",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local placeId = game.PlaceId
+
+        local function serverHop()
+            local servers
+            local cursor = ""
+
+            local success, response = pcall(function()
+                local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. cursor
+                return HttpService:JSONDecode(game:HttpGet(url))
+            end)
+
+            if success and response and response.data then
+                servers = response.data
+            else
+                return
+            end
+
+            for _, server in ipairs(servers) do
+                if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                    TeleportService:TeleportToPlaceInstance(placeId, server.id)
+                    return
+                end
+            end
+
+            if response.nextPageCursor then
+                cursor = response.nextPageCursor
+                serverHop()
+            else
+            end
+        end
+
+        serverHop()
+    end
+})
+
+Tabs.Misc:AddButton({
+    Title = "Rejoin",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local player = game.Players.LocalPlayer
+        TeleportService:Teleport(game.PlaceId, player)
+    end
+})
+
+local Dropdown = Tabs.SwitchFast:AddDropdown("Dropdown", {
+    Title = "Select",
+    Values = { "Honored One", "Vessel", "Restless Gambler", "Tem Shadows" },
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:SetValue("Honored One")
+
+local selectedValue
+Dropdown:OnChanged(function(Value)
+    selectedValue = Value
+end)
+
+Tabs.SwitchFast:AddButton({
+    Title = "Apply Character",
+    Callback = function()
+        if selectedValue == "Honored One" then
+            local args = { [1] = "Gojo" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Vessel" then
+            local args = { [1] = "Itadori" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Restless Gambler" then
+            local args = { [1] = "Hakari" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+
+        elseif selectedValue == "Tem Shadows" then
+            local args = { [1] = "Megumi" }
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("JoinService"):WaitForChild("RE"):WaitForChild("Change"):FireServer(unpack(args))
+        end
+    end
+})
+
+local Toggle = Tabs.Main:AddToggle("MyToggle", { Title = "Auto Play", Default = false })
+local autoPlayActive = false
+
+Toggle:OnChanged(function()
+    autoPlayActive = Toggle.Value
+
+    local function getClosestPlayer()
+        local closestPlayer = nil
+        local closestDistance = math.huge
+
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            if otherPlayer ~= game.Players.LocalPlayer and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (otherPlayer.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                if distance < closestDistance then
+                    closestPlayer = otherPlayer
+                    closestDistance = distance
+                end
+            end
+        end
+        return closestPlayer
+    end
+
+    local function moveToClosestPlayer()
+        local closestPlayer = getClosestPlayer()
+
+        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPosition = closestPlayer.Character.HumanoidRootPart.Position
+            game.Players.LocalPlayer.Character.Humanoid:MoveTo(targetPosition)
+        end
+    end
+
+    local function monitorPlayerStatus()
+        local closestPlayer = getClosestPlayer()
+
+        if closestPlayer then
+            closestPlayer.CharacterAdded:Connect(function(character)
+                local humanoid = character:WaitForChild("Humanoid")
+                humanoid.Died:Connect(function()
+                end)
+            end)
+
+            closestPlayer.AncestryChanged:Connect(function(_, parent)
+                if not parent then
+                end
+            end)
+        end
+    end
+
+    if not autoPlayActive then
+        local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid:MoveTo(game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
+        end
+        return
+    end
+
+    spawn(function()
+        while autoPlayActive do
+            moveToClosestPlayer()
+            monitorPlayerStatus()
+            wait(1)
+        end
+    end)
+end)
+
+Options.MyToggle:SetValue(false)
+
+local Toggle = Tabs.ESP:AddToggle("MyToggle", { Title = "Players ESP", Default = false })
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local highlight = Instance.new("Highlight")
+highlight.Name = "Highlight"
+local localPlayer = Players.LocalPlayer
+
+local function addHighlight(player)
+    if player ~= localPlayer and Toggle.Value then
+        repeat wait() until player.Character
+        if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+            local highlightClone = highlight:Clone()
+            highlightClone.Adornee = player.Character
+            highlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
+            highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlightClone.Name = "Highlight"
+        end
+    end
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+    addHighlight(player)
+end
+
+Players.PlayerAdded:Connect(function(player)
+    addHighlight(player)
+end)
+
+Players.PlayerRemoving:Connect(function(playerRemoved)
+    if playerRemoved ~= localPlayer then
+        local highlightPart = playerRemoved.Character:FindFirstChild("HumanoidRootPart")
+        if highlightPart and highlightPart:FindFirstChild("Highlight") then
+            highlightPart.Highlight:Destroy()
+        end
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if Toggle.Value then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer then
+                repeat wait() until player.Character
+                if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+                    addHighlight(player)
+                    task.wait()
+                end
+            end
+        end
+    else
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer then
+                local highlightPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                if highlightPart and highlightPart:FindFirstChild("Highlight") then
+                    highlightPart.Highlight:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+Toggle:OnChanged(function()
+end)
+
+local Toggle = Tabs.ESP:AddToggle("NametagESP", {
+    Title = "Nametag ESP", 
+    Default = false
+})
+
+local player = game.Players.LocalPlayer
+local nametagESPEnabled = false
+local nametags = {}
+
+local function addNametag(targetPlayer)
+    if targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head") then
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Size = UDim2.new(0, 50, 0, 25)
+        billboardGui.StudsOffset = Vector3.new(0, 3, 0)
+        billboardGui.AlwaysOnTop = true
+        billboardGui.Parent = targetPlayer.Character.Head
+
+        local nameLabel = Instance.new("TextLabel", billboardGui)
+        nameLabel.Size = UDim2.new(1, 0, 1, 0)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Text = targetPlayer.Name
+        nameLabel.TextColor3 = Color3.new(1, 1, 1)
+        nameLabel.TextSize = 12
+        nameLabel.Font = Enum.Font.Gotham
+        nameLabel.TextScaled = false
+
+        nametags[targetPlayer] = nameLabel
+    end
+end
+
+local function removeNametag(targetPlayer)
+    if nametags[targetPlayer] then
+        nametags[targetPlayer]:Destroy()
+        nametags[targetPlayer] = nil
+    end
+end
+
+Toggle:OnChanged(function()
+    nametagESPEnabled = Toggle.Value
+    if nametagESPEnabled then
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            if otherPlayer ~= player then
+                addNametag(otherPlayer)
+            end
+        end
+        game.Players.PlayerAdded:Connect(function(newPlayer)
+            if nametagESPEnabled and newPlayer ~= player then
+                newPlayer.CharacterAdded:Connect(function()
+                    addNametag(newPlayer)
+                end)
+            end
+        end)
+    else
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            removeNametag(otherPlayer)
+        end
+    end
+end)
+
+Options.NametagESP:SetValue(false)
+
+local Toggle = Tabs.ESP:AddToggle("HealthESP", {
+    Title = "Player Health ESP", 
+    Default = false
+})
+
+local player = game.Players.LocalPlayer
+local healthESPEnabled = false
+local healthTags = {}
+
+local function addHealthTag(targetPlayer)
+    if targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head") then
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Size = UDim2.new(0, 50, 0, 25)
+        billboardGui.StudsOffset = Vector3.new(0, 3, 0)
+        billboardGui.AlwaysOnTop = true
+        billboardGui.Parent = targetPlayer.Character.Head
+
+        local healthLabel = Instance.new("TextLabel", billboardGui)
+        healthLabel.Size = UDim2.new(1, 0, 1, 0)
+        healthLabel.BackgroundTransparency = 1
+        healthLabel.Text = "Health: " .. math.floor(targetPlayer.Character.Humanoid.Health)
+        healthLabel.TextColor3 = Color3.new(1, 0, 0)
+        healthLabel.TextSize = 12
+        healthLabel.Font = Enum.Font.Gotham
+        healthLabel.TextScaled = false
+
+        targetPlayer.Character.Humanoid.HealthChanged:Connect(function()
+            healthLabel.Text = "Health: " .. math.floor(targetPlayer.Character.Humanoid.Health)
+        end)
+
+        healthTags[targetPlayer] = healthLabel
+    end
+end
+
+local function removeHealthTag(targetPlayer)
+    if healthTags[targetPlayer] then
+        healthTags[targetPlayer]:Destroy()
+        healthTags[targetPlayer] = nil
+    end
+end
+
+Toggle:OnChanged(function()
+    healthESPEnabled = Toggle.Value
+    if healthESPEnabled then
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            if otherPlayer ~= player then
+                addHealthTag(otherPlayer)
+            end
+        end
+        game.Players.PlayerAdded:Connect(function(newPlayer)
+            if healthESPEnabled and newPlayer ~= player then
+                newPlayer.CharacterAdded:Connect(function()
+                    addHealthTag(newPlayer)
+                end)
+            end
+        end)
+    else
+        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+            removeHealthTag(otherPlayer)
+        end
+    end
+end)
+
+Options.HealthESP:SetValue(false)
+
+Tabs.AntiLag:AddButton({
+    Title = "Anti Lag",
+    Callback = function()
+        Window:Dialog({
+            Title = "Performance Adjustment",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+
+                        local ToDisable = {
+                            Textures = true,
+                            VisualEffects = true,
+                            Parts = true,
+                            Particles = true,
+                            Sky = true
+                        }
+
+                        local ToEnable = {
+                            FullBright = false
+                        }
+
+                        local Stuff = {}
+
+                        for _, v in next, game:GetDescendants() do
+                            if ToDisable.Parts then
+                                if v:IsA("Part") or v:IsA("Union") or v:IsA("BasePart") then
+                                    v.Material = Enum.Material.SmoothPlastic
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.Particles then
+                                if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Explosion") or v:IsA("Sparkles") or v:IsA("Fire") then
+                                    v.Enabled = false
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.VisualEffects then
+                                if v:IsA("BloomEffect") or v:IsA("BlurEffect") or v:IsA("DepthOfFieldEffect") or v:IsA("SunRaysEffect") then
+                                    v.Enabled = false
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.Textures then
+                                if v:IsA("Decal") or v:IsA("Texture") then
+                                    v.Texture = ""
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+
+                            if ToDisable.Sky then
+                                if v:IsA("Sky") then
+                                    v.Parent = nil
+                                    table.insert(Stuff, 1, v)
+                                end
+                            end
+                        end
+
+                        game:GetService("TestService"):Message("Effects Disabler Script : Successfully disabled "..#Stuff.." assets / effects. Settings :")
+
+                        for i, v in next, ToDisable do
+                            print(tostring(i)..": "..tostring(v))
+                        end
+
+                        if ToEnable.FullBright then
+                            local Lighting = game:GetService("Lighting")
+
+                            Lighting.FogColor = Color3.fromRGB(255, 255, 255)
+                            Lighting.FogEnd = math.huge
+                            Lighting.FogStart = math.huge
+                            Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+                            Lighting.Brightness = 5
+                            Lighting.ColorShift_Bottom = Color3.fromRGB(255, 255, 255)
+                            Lighting.ColorShift_Top = Color3.fromRGB(255, 255, 255)
+                            Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+                            Lighting.Outlines = true
+                        end
+                        print("Performance improved successfully!")
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Action canceled.")
+                    end
+                }
+            }
+        })
+    end
+})
+
+Tabs.AntiLag:AddButton({
+    Title = "Anti Lag 2",
+    Description = "Removes the FPS limit and improves performance, reducing lag.",
+    Callback = function()
+        Window:Dialog({
+            Title = "Confirmation",
+            Content = "Do you want to activate Anti Lag? This may improve performance in the game.",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        loadstring(game:HttpGet('https://raw.githubusercontent.com/vexroxd/My-Script-/main/roblox%20fps%20unlocker%20script.lua'))()
+                        print("Anti Lag activated.")
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled.")
+                    end
+                }
+            }
+        })
+    end
+})
+
+-- /// SKILLS /// --
+
+local SkillsDropdown1 = Tabs.Skills:AddDropdown("SkillsDropdown1", {
+    Title = "Skills 1",
+    Values = { "LapseBlue", "ReversalRed", "RapidPunches", "TwofoldKick" },
+    Multi = true,
+    Default = {},
+})
+
+local SkillsDropdown2 = Tabs.Skills:AddDropdown("SkillsDropdown2", {
+    Title = "Skills 2",
+    Values = { "CursedStrikes", "CrushingBlow", "DivergentFist", "ManjiKick" },
+    Multi = true,
+    Default = {},
+})
+
+local SkillsDropdown3 = Tabs.Skills:AddDropdown("SkillsDropdown3", {
+    Title = "Skills 3",
+    Values = { "ReserveBall", "ShutterDoor", "RoughEnergy", "FeverBreaker" },
+    Multi = true,
+    Default = {},
+})
+
+local SkillsDropdown4 = Tabs.Skills:AddDropdown("SkillsDropdown4", {
+    Title = "Skills 4",
+    Values = { "RabbitEscape", "Nue", "DivineDog" },
+    Multi = true,
+    Default = {},
+})
+
+local runningScripts1 = {}
+local runningScripts2 = {}
+local runningScripts3 = {}
+local runningScripts4 = {}
+
+local function startLoop(skillName, serviceName, scriptTable, extraArgs)
+    if scriptTable[skillName] then return end
+    scriptTable[skillName] = true
+
+    spawn(function()
+        while scriptTable[skillName] do
+            local args = { [1] = false }
+            if extraArgs then
+                args = extraArgs
+            end
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild(serviceName):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            wait(0.1)
+        end
+    end)
+end
+
+local function stopLoop(skillName, scriptTable)
+    scriptTable[skillName] = nil
+end
+
+SkillsDropdown1:OnChanged(function(Value)
+    if Value["LapseBlue"] then
+        startLoop("LapseBlue", "LapseBlueService", runningScripts1)
+    else
+        stopLoop("LapseBlue", runningScripts1)
+    end
+
+    if Value["ReversalRed"] then
+        startLoop("ReversalRed", "ReversalRedService", runningScripts1)
+    else
+        stopLoop("ReversalRed", runningScripts1)
+    end
+
+    if Value["RapidPunches"] then
+        startLoop("RapidPunches", "RapidPunchesService", runningScripts1)
+    else
+        stopLoop("RapidPunches", runningScripts1)
+    end
+
+    if Value["TwofoldKick"] then
+        startLoop("TwofoldKick", "TwofoldKickService", runningScripts1)
+    else
+        stopLoop("TwofoldKick", runningScripts1)
+    end
+end)
+
+SkillsDropdown2:OnChanged(function(Value)
+    if Value["CursedStrikes"] then
+        startLoop("CursedStrikes", "CursedStrikesService", runningScripts2)
+    else
+        stopLoop("CursedStrikes", runningScripts2)
+    end
+
+    if Value["CrushingBlow"] then
+        startLoop("CrushingBlow", "CrushingBlowService", runningScripts2)
+    else
+        stopLoop("CrushingBlow", runningScripts2)
+    end
+
+    if Value["DivergentFist"] then
+        startLoop("DivergentFist", "DivergentFistService", runningScripts2)
+    else
+        stopLoop("DivergentFist", runningScripts2)
+    end
+
+    if Value["ManjiKick"] then
+        startLoop("ManjiKick", "ManjiKickService", runningScripts2)
+    else
+        stopLoop("ManjiKick", runningScripts2)
+    end
+end)
+
+SkillsDropdown3:OnChanged(function(Value)
+    if Value["ReserveBall"] then
+        startLoop("ReserveBall", "ReserveBallService", runningScripts3)
+    else
+        stopLoop("ReserveBall", runningScripts3)
+    end
+
+    if Value["ShutterDoor"] then
+        startLoop("ShutterDoor", "ShutterDoorService", runningScripts3)
+    else
+        stopLoop("ShutterDoor", runningScripts3)
+    end
+
+    if Value["RoughEnergy"] then
+        startLoop("RoughEnergy", "RoughEnergyService", runningScripts3)
+    else
+        stopLoop("RoughEnergy", runningScripts3)
+    end
+
+    if Value["FeverBreaker"] then
+        startLoop("FeverBreaker", "FeverBreakerService", runningScripts3)
+    else
+        stopLoop("FeverBreaker", runningScripts3)
+    end
+end)
+
+SkillsDropdown4:OnChanged(function(Value)
+    if Value["RabbitEscape"] then
+        local args = {
+            [1] = workspace:WaitForChild("Characters"):WaitForChild("King_Raspberries")
+        }
+        startLoop("RabbitEscape", "RabbitEscapeService", runningScripts4, args)
+    else
+        stopLoop("RabbitEscape", runningScripts4)
+    end
+
+    if Value["Nue"] then
+        startLoop("Nue", "NueService", runningScripts4)
+    else
+        stopLoop("Nue", runningScripts4)
+    end
+
+    if Value["DivineDog"] then
+        startLoop("DivineDog", "DivineDogService", runningScripts4)
+    else
+        stopLoop("DivineDog", runningScripts4)
+    end
+end)
+
+Tabs.Others:AddButton({
+    Title = "Aimbot",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/yzeedw/Mortalv2-main/main/UNIVERSAL%20AIMBOT"))()
+    end
+})
+
+local NoclipToggle = Tabs.Others:AddToggle("NoclipToggle", {
+    Title = "Noclip", 
+    Default = false,
+})
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local noclipEnabled = false
+
+local function disableCollision()
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+end
+
+character.DescendantAdded:Connect(function(part)
+    if noclipEnabled and part:IsA("BasePart") then
+        part.CanCollide = false
+    end
+end)
+
+NoclipToggle:OnChanged(function()
+    noclipEnabled = NoclipToggle.Value
+    if noclipEnabled then
+        while noclipEnabled do
+            disableCollision()
+            wait(0.1)
+        end
+    else
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+    end
+end)
+
+local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false})
+
+AutoAwakenToggle:OnChanged(function()
+    if Options.AutoAwakenToggle.Value then
+        while Options.AutoAwakenToggle.Value and task.wait() do
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GojoService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ItadoriService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HakariService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MegumiService"):WaitForChild("RE"):WaitForChild("Ultimate"):FireServer()
+        end
+    end
+end)
+
+Options.AutoAwakenToggle:SetValue(false)
+
+local AwakenSkillsSection = Tabs.Skills:AddSection("Awaken Skills")
+
+local SkillsToggle = Tabs.Skills:AddToggle("SkillsToggle", {Title = "Skills 1", Default = false})
+
+SkillsToggle:OnChanged(function()
+    if Options.SkillsToggle.Value then
+        while Options.SkillsToggle.Value and task.wait() do
+            local args = {
+                [1] = false
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("LapseBlueMaxService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ReversalRedMaxService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("HollowPurpleService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InfiniteVoidService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+        end
+    end
+end)
+
+Options.SkillsToggle:SetValue(false)
+
+local SkillsToggle = Tabs.Skills:AddToggle("SkillsToggle", {Title = "Skills 2", Default = false})
+
+SkillsToggle:OnChanged(function()
+    if SkillsToggle.Value then
+        while SkillsToggle.Value and task.wait() do
+            local args = { [1] = false }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("DismantleService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("FlameArrowService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RushService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MalevolantShrineService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+        end
+    end
+end)
+
+Options.SkillsToggle:SetValue(false)
+
+local SkillsToggle2 = Tabs.Skills:AddToggle("SkillsToggle2", {Title = "Skills 3", Default = false})
+
+SkillsToggle2:OnChanged(function()
+    if SkillsToggle2.Value then
+        while SkillsToggle2.Value and task.wait() do
+            local args = { [1] = false }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ReserveBallService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ShutterDoorService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer()
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("RoughEnergyService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("FeverBreakerService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+        end
+    end
+end)
+
+Options.SkillsToggle2:SetValue(false)
+
+local SkillsToggle3 = Tabs.Skills:AddToggle("SkillsToggle3", {Title = "Skills 4", Default = false})
+
+SkillsToggle3:OnChanged(function()
+    if Options.SkillsToggle3.Value then
+        while Options.SkillsToggle3.Value and task.wait() do
+            local args = {
+                [1] = false
+            }
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MaxElephantService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("GreatSerpentService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("ShadowSwarmService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer(unpack(args))
+
+            game:GetService("ReplicatedStorage"):WaitForChild("Knit"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MahoragaUseService"):WaitForChild("RE"):WaitForChild("Activated"):FireServer()
+        end
+    end
+end)
+
+Options.SkillsToggle3:SetValue(false)
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
