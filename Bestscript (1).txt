@@ -11,7 +11,7 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 
 local Window = Fluent:CreateWindow({
     Title = "game:GetService("MarketplaceService"):GetProductInfo(9391468976).Name .. " | Nozer Hub",
-    SubTitle = "",
+    SubTitle = "Full Version",
     TabWidth = 120,
     Size = UDim2.fromOffset(500, 350),
     Acrylic = false,
@@ -31,7 +31,7 @@ local Tabs = {
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
--- /// ANTI KICK ///
+-- /// ANTI KICK /// --
 
 local Options = Fluent.Options
 
@@ -50,7 +50,7 @@ Tabs.Info:AddButton({
     end
 })
 
--- /// AUTO ATTACK ///
+-- /// AUTO ATTACK /// --
 
 local AutoAttackToggle = Tabs.Main:AddToggle("AutoAttackToggle", {Title = "Auto Attack", Default = false })
 
@@ -74,7 +74,7 @@ AutoAttackToggle:OnChanged(function()
     end
 end)
 
--- /// AUTO DASH ATTACK ///
+-- /// AUTO DASH ATTACK /// --
 
 local AutoDashAttackToggle = Tabs.Main:AddToggle("AutoDashAttackToggle", {Title = "Auto Dash Attack", Default = false })
 
@@ -94,7 +94,7 @@ AutoDashAttackToggle:OnChanged(function()
     end
 end)
 
--- /// KILL FARM ///
+-- /// KILL FARM /// --
 
 local Toggle = Tabs.Main:AddToggle("AutoFarmToggle", {
     Title = "Kill Farm",
@@ -167,7 +167,7 @@ spawn(function()
     end
 end)
 
--- /// ANTI AFK ///
+-- /// ANTI AFK /// --
 
 local AntiAFKEnabled = true
 local Toggle = Tabs.Misc:AddToggle("MyToggle", { Title = "Anti AFK", Default = true })
@@ -176,7 +176,7 @@ Toggle:OnChanged(function()
 end)
 Options.MyToggle:SetValue(true)
 
--- /// SERVER HOP ///
+-- /// SERVER HOP /// --
 
 Tabs.Misc:AddButton({
     Title = "Server Hop",
@@ -218,7 +218,7 @@ Tabs.Misc:AddButton({
     end
 })
 
--- /// REJOIN ///
+-- /// REJOIN /// --
 
 Tabs.Misc:AddButton({
     Title = "Rejoin",
@@ -229,7 +229,7 @@ Tabs.Misc:AddButton({
     end
 })
 
--- /// SWITCH FAST ///
+-- /// SWITCH FAST /// --
 
 local Dropdown = Tabs.SwitchFast:AddDropdown("Dropdown", {
     Title = "Select",
@@ -267,7 +267,7 @@ Tabs.SwitchFast:AddButton({
     end
 })
 
--- /// AUTO PLAY ///
+-- /// AUTO PLAY /// --
 
 local Toggle = Tabs.Main:AddToggle("MyToggle", { Title = "Auto Play", Default = false })
 local autoPlayActive = false
@@ -336,7 +336,7 @@ end)
 
 Options.MyToggle:SetValue(false)
 
--- /// ESP ///
+-- /// ESP /// --
 
 local Toggle = Tabs.ESP:AddToggle("MyToggle", { Title = "Players ESP", Default = false })
 
@@ -526,7 +526,7 @@ Toggle:OnChanged(function()
     end
 end)
 
--- /// ANTI LAG ///
+-- /// ANTI LAG /// --
 
 Options.HealthESP:SetValue(false)
 
@@ -650,7 +650,7 @@ Tabs.AntiLag:AddButton({
     end
 })
 
--- /// SKILLS ///
+-- /// SKILLS /// --
 
 local SkillsDropdown1 = Tabs.Skills:AddDropdown("SkillsDropdown1", {
     Title = "Skills 1",
@@ -806,25 +806,7 @@ SkillsDropdown4:OnChanged(function(Value)
     end
 end)
 
-SaveManager:SetLibrary(Fluent)
-InterfaceManager:SetLibrary(Fluent)
-SaveManager:IgnoreThemeSettings()
-SaveManager:SetIgnoreIndexes({})
-InterfaceManager:SetFolder("FluentScriptHub")
-SaveManager:SetFolder("FluentScriptHub/specific-game")
-InterfaceManager:BuildInterfaceSection(Tabs.Settings)
-SaveManager:BuildConfigSection(Tabs.Settings)
-
-Window:SelectTab(1)
-Fluent:Notify({
-    Title = "Fluent",
-    Content = "The script has been loaded.",
-    Duration = 8
-})
-
-SaveManager:LoadAutoloadConfig()
-
--- /// AIMBOT ///
+-- /// AIMBOT /// --
 
 Tabs.Others:AddButton({
     Title = "Aimbot",
@@ -833,7 +815,7 @@ Tabs.Others:AddButton({
     end
 })
 
--- /// NOCLIP ///
+-- /// NOCLIP /// --
 
 local NoclipToggle = Tabs.Others:AddToggle("NoclipToggle", {
     Title = "Noclip", 
@@ -874,7 +856,7 @@ NoclipToggle:OnChanged(function()
     end
 end)
 
--- /// AUTO AWAKEN ///
+-- /// AUTO AWAKEN /// --
 
 local AutoAwakenToggle = Tabs.Main:AddToggle("AutoAwakenToggle", {Title = "Auto Awaken", Default = false})
 
@@ -976,3 +958,12 @@ SkillsToggle3:OnChanged(function()
 end)
 
 Options.SkillsToggle3:SetValue(false)
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
